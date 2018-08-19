@@ -14,14 +14,23 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+## Assignment Spec
+- Create a chat application (Server and front end)
+- Build the dashboard for the chat system.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- The system will have the following roles
+    - Group Admin
+        - Ability to create groups
+        - Ability to create channels within groups
+        - Can create/invite users to a chanel (If the user has already been created they will simply be added to the chanel)
+        - Ability to remove groups, channels and users from channels
+        - Can allow other users to become group admins of the group
+    - Super Admin
+        - Inherits all permissions from Group Admin
+        - Can create users with Group Admin Role
+        - Remove users
+    - User
+        - Identified by username
+        - Has an email address
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+> Initially there is one user called Super who is also a super admin.
