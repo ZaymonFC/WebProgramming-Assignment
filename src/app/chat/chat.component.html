@@ -1,0 +1,16 @@
+<div class="container">
+  <ul class="list-group">
+    <li *ngFor="let message of messages" class="list-item">
+      {{message.text}}
+    </li>
+  </ul>
+</div>
+
+<br/>
+
+
+  <div class="form-group">
+    <label  for="message">Enter Message:</label>
+    <input (keyup)="keyUp($event.key)" type="text" class="form-control" [(ngModel)]="message">
+  </div>
+  <button (click)="sendMessage()" class="btn btn-primary">Send Message</button>
