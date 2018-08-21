@@ -14,22 +14,10 @@ export default function makeRepositoryManager( fileHandler ) {
   function findItems(selector) {
     return new Promise((resolve, reject) => {
       fileHandler.readJSON()
-        .then(result => {
-          let items = []
-          for (let item of result) {
-            let include = true
-            for (const [key, value] in Object.entries(selector)) {
-              if (item.key && item.key === value) {
-                  include = false
-              } else {
-                include = false
-              }
-            }
-            if (include) {
-              items.push(item)
-            }
-          }
-          resolve(items)
+        .then(results => {
+          resolve(results.filter(item =>
+            Object.entries(selector).every((key, value) => item[key] && item[key] === value)
+          ))
         })
         .catch((err) => {
           reject('Failed to find items: ' + err)
@@ -51,7 +39,7 @@ export default function makeRepositoryManager( fileHandler ) {
         .then(result => {
           for (let item of result) {
             for (const [key, value] in Object.entries(item)) {
-              if (item.key && item.key == value) {
+              if (item.key && item.key === value) {
                 item.deleted = true
               }
             }
