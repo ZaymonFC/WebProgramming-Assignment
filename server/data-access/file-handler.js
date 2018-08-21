@@ -11,20 +11,37 @@ export default function makeFileHandler(fileName) {
     return new Promise((resolve, reject) => {
       fs.access(fileName, fs.constants.F_OK | fs.constants.W_OK, (err) => {
         if (err) {
-          reject(`${file} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`)
+          reject(`${fileName} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`)
         } else {
-          resolve(`${file} exists, and it is writable`)
+          resolve(`${fileName} exists, and it is writable`)
         }
       })
     })
   }
 
   function readJSON() {
-
+    return new Promise((resolve, reject) => {
+      fs.readFile(fileName, (result, err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(JSON.stringify(result))
+        }
+      })
+    })
   }
 
-  function writeJSON() {
-
+  function writeJSON(objects) {
+    return new Promise((resolve, reject) => {
+      let jsonString = JSON.stringify(objects)
+      fs.writeFile(fileName, jsonString, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
   }
 }
 
