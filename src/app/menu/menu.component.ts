@@ -9,6 +9,7 @@ import { Router } from '@angular/router'
 export class MenuComponent implements OnInit {
   private loggedIn: boolean
   private username: string
+  private routeName: string
 
   constructor(private router: Router) {
     // Subscribe to route changes to re-evalutate logged in status
@@ -20,6 +21,8 @@ export class MenuComponent implements OnInit {
         } else {
           this.loggedIn = false
         }
+        this.routeName = this.router.url.replace('/', '')
+        console.log(this.routeName)
       }
     })
   }
@@ -34,7 +37,6 @@ export class MenuComponent implements OnInit {
     }
 
     this.router.navigateByUrl('')
-
     this.loggedIn = false
   }
 

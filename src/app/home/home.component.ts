@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   private username: string
   private showError: boolean
   private statusMessage: string
+  private loggedIn: boolean
 
   constructor(private router: Router, private form: FormsModule, private http: HttpClient) {
     this.username = ''
@@ -23,7 +24,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     if (window.sessionStorage) {
       if (sessionStorage.getItem('loggedIn')) {
-        this.router.navigateByUrl('chat')
+        this.loggedIn = true
       }
     }
   }

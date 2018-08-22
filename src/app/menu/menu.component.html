@@ -1,4 +1,27 @@
-<div *ngIf="loggedIn">
-  <p>Logged in as {{ username }}</p>
-  <button class="btn btn-primary" (click)='logOut()'>Logout</button>
-</div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="{{ this.routeName === '' ? 'nav-item active' : 'nav-item' }}">
+        <a class="nav-link" [routerLink]="['/']">Home</a>
+      </li>
+      <li class="{{ this.routeName === 'chat' ? 'nav-item active' : 'nav-item' }}">
+        <a class="nav-link" [routerLink]="['chat']">Chat</a>
+      </li>
+      <li class="{{ this.routeName === 'dashboard' ? 'nav-item active' : 'nav-item' }}">
+        <a class="nav-link" [routerLink]="['dashboard']">Dashboard </a>
+      </li>
+      <!-- <li class="{{ this.routeName === '' ? 'nav-item active' : 'nav-item' }}">
+        <a class="nav-link" [routerLink]="[]">Link</a>
+      </li> -->
+    </ul>
+    <form *ngIf="loggedIn" class="form-inline my-2 my-lg-0">
+      <label class="mr-sm-2">Logged in as {{ username }}</label>
+      <button class="btn btn-outline-primary my-2 my-sm-0" (click)='logOut()'>Logout</button>
+    </form>
+  </div>
+</nav>
+
+

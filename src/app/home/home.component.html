@@ -1,11 +1,18 @@
-<h3>Enter a username</h3>
+<div *ngIf="!loggedIn">
+  <h3>Enter a username</h3>
+  
+  <form (submit)="loginUser($event)">
+    <div class="form-group">
+      <label for="Username">Username: </label>
+      <input type="text" class="form-control" [(ngModel)]='username' name="username" placeholder="Username">
+    </div>
+    <input type="submit" class="btn btn-primary" value="Log In">
+  </form>
+  <br>
+  <div class="alert alert-danger" *ngIf="showError">{{statusMessage}}</div>
+</div>
 
-<form (submit)="loginUser($event)">
-  <div class="form-group">
-    <label for="Username">Username: </label>
-    <input type="text" class="form-control" [(ngModel)]='username' name="username" placeholder="Username">
-  </div>
-  <input type="submit" class="btn btn-primary" value="Log In">
-</form>
-<br>
-<div class="alert alert-danger" *ngIf="showError">{{statusMessage}}</div>
+<div *ngIf="loggedIn">
+  <h3>Welcome to the sockets chat site:</h3>
+  <h5>Feel free to go to the chat room <a [routerLink]="['chat']">here.</a></h5>
+</div>
