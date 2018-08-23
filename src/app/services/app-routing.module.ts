@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router'
 
 // Component Imports
-import { HomeComponent } from './home/home.component'
-import { ChatComponent } from './chat/chat.component'
-import { NotFoundComponent } from './not-found/not-found.component'
+import { HomeComponent } from '../home/home.component'
+import { ChatComponent } from '../chat/chat.component'
+import { NotFoundComponent } from '../not-found/not-found.component'
+import { DashboardComponent } from '../dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'chat', component: ChatComponent },
   { path: '404', component: NotFoundComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: '**', redirectTo: '404'}
 ]
 

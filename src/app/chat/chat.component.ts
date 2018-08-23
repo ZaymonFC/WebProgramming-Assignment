@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'
 import { SocketService } from '../services/socket.service';
 import { Observable, Subscription } from 'rxjs';
+import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -13,18 +14,22 @@ export class ChatComponent implements OnInit, OnDestroy {
   private message
   private connection: Subscription
 
-  constructor(private router: Router, private socketService: SocketService) {
-    if (window.sessionStorage) {
-      // Check if the user is logged in
-      if (!sessionStorage.getItem('loggedIn')) {
-        router.navigateByUrl('')
-        return
-      }
+  constructor(
+    private router: Router,
+    private socketService: SocketService,
+    private userService: UserService
+  ) {
 
-      this.username = sessionStorage.getItem('username')
-      this.message = ''
-      this.messages = []
+    // Check if the user is logged in
+    if (!this.userService.userLoggedIn()) {
+      this.router.navigateByUrl('')
+      return
     }
+
+    console.log('[Chat] accessing username')
+    this.username = this.userService.getUser().username
+    this.message = ''
+    this.messages = []
   }
 
   ngOnInit() {
