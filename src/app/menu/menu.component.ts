@@ -28,5 +28,7 @@ export class MenuComponent implements OnInit {
   logOut(event: Event) {
     this.userService.logOutUser()
     this.router.navigateByUrl('')
+    this.loggedIn = false
+    this.username = null
   }
 }
