@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { Router } from '@angular/router'
 import { HttpClient } from '@angular/common/http'
+import { UserService } from '../services/user.service';
 
 
 @Component({
@@ -15,18 +16,19 @@ export class HomeComponent implements OnInit {
   private statusMessage: string
   private loggedIn: boolean
 
-  constructor(private router: Router, private form: FormsModule, private http: HttpClient) {
+  constructor(
+    private router: Router,
+    private form: FormsModule,
+    private http: HttpClient,
+    private userService: UserService
+  ) {
     this.username = ''
     this.showError = false
     this.statusMessage = ''
   }
 
   ngOnInit() {
-    if (window.sessionStorage) {
-      if (sessionStorage.getItem('loggedIn')) {
-        this.loggedIn = true
-      }
-    }
+    // this.loggedIn = this.userService.userLoggedIn()
   }
 
   loginUser(event: Event) {
@@ -37,12 +39,7 @@ export class HomeComponent implements OnInit {
       return
     }
 
-    if (window.sessionStorage) {
-      console.log(`Logging user: ${this.username} into local storage `)
-      sessionStorage.setItem('username', this.username)
-      sessionStorage.setItem('loggedIn', 'true')
-      this.router.navigateByUrl('chat')
-    }
+    this.userService.logInUser(this.username)
   }
 
 }

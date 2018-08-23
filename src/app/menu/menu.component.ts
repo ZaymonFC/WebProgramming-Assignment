@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-menu',
@@ -11,18 +12,12 @@ export class MenuComponent implements OnInit {
   private username: string
   private routeName: string
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private userService: UserService) {
     // Subscribe to route changes to re-evalutate logged in status
     router.events.subscribe(() => {
-      if (window.sessionStorage) {
-        if (sessionStorage.getItem('loggedIn')) {
-          this.loggedIn = true
-          this.username = sessionStorage.getItem('username')
-        } else {
-          this.loggedIn = false
-        }
-        this.routeName = this.router.url.replace('/', '')
-        console.log(this.routeName)
+      this.loggedIn = userService.userLoggedIn()
+      if (this.userService.userLoggedIn()) {
+        this.username = userService.getUser().username
       }
     })
   }
@@ -31,13 +26,7 @@ export class MenuComponent implements OnInit {
   }
 
   logOut(event: Event) {
-    if (window.sessionStorage) {
-      sessionStorage.removeItem('username')
-      sessionStorage.removeItem('loggedIn')
-    }
-
+    this.userService.logOutUser()
     this.router.navigateByUrl('')
-    this.loggedIn = false
   }
-
 }

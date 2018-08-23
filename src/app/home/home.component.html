@@ -1,4 +1,4 @@
-<div *ngIf="!loggedIn">
+<div *ngIf="!this.userService.userLoggedIn()">
   <h3>Enter a username</h3>
   
   <form (submit)="loginUser($event)">
@@ -9,10 +9,10 @@
     <input type="submit" class="btn btn-primary" value="Log In">
   </form>
   <br>
-  <div class="alert alert-danger" *ngIf="showError">{{statusMessage}}</div>
+  <div class="alert alert-danger" *ngIf="showError">{{statusMessage}}</div> 
 </div>
 
-<div *ngIf="loggedIn">
+<div *ngIf="this.userService.userLoggedIn()">
   <h3>Welcome to the sockets chat site:</h3>
   <h5>Feel free to go to the chat room <a [routerLink]="['chat']">here.</a></h5>
 </div>

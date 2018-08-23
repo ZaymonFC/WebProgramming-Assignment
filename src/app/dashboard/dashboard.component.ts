@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { getDummyGroups } from './mockData'
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
