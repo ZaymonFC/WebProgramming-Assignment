@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit {
     }
 
     this.userService.logInUser(this.username)
+    this.router.navigateByUrl('dashboard')
   }
 
 }

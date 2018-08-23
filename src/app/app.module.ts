@@ -13,6 +13,7 @@ import { ChatComponent } from './chat/chat.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { MenuComponent } from './menu/menu.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardGroupComponent } from './dashboard/dashboard-group/dashboard-group.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     NotFoundComponent,
     MenuComponent,
     DashboardComponent,
+    DashboardGroupComponent,
   ],
   imports: [
     BrowserModule,

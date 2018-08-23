@@ -19,18 +19,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     private socketService: SocketService,
     private userService: UserService
   ) {
-    if (window.sessionStorage) {
-      // Check if the user is logged in
-      if (!userService.userLoggedIn()) {
-        router.navigateByUrl('')
-        return
-      }
 
-      console.log('[Chat] accessing username')
-      this.username = this.userService.getUser().username
-      this.message = ''
-      this.messages = []
+    // Check if the user is logged in
+    if (!this.userService.userLoggedIn()) {
+      this.router.navigateByUrl('')
+      return
     }
+
+    console.log('[Chat] accessing username')
+    this.username = this.userService.getUser().username
+    this.message = ''
+    this.messages = []
   }
 
   ngOnInit() {

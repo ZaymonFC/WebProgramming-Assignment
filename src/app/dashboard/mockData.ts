@@ -1,5 +1,7 @@
+import { Group } from '../types/group'
+
 export function getDummyGroups() {
-    return  [
+    const groups: Group[] = [
         {
             name: 'The Boys',
             description: 'Yeah the boys',
@@ -15,6 +17,6 @@ export function getDummyGroups() {
             description: 'Group for some games and shit',
 
         },
-
     ]
+    return groups
 }
