@@ -5,11 +5,22 @@ import { resolve } from "path";
 export default function makeRepositoryManager( fileHandler ) {
 
   return Object.freeze(
-    findItems,
+    FindItems,
     insertItems,
     deleteItems,
     updateItems
   )
+
+  function FindItems(selector) {
+    try {
+      const data = await fileHandler.ReadJSON()
+      return data.filter(item => (
+        Object.entries(selector).every((key, value) => item[key] && item[key] === value)
+      ))
+    } catch (error) {
+      console.error('Something went wrong finding items with selector: ', selector)
+    }
+  }
 
   function findItems(selector) {
     return new Promise((resolve, reject) => {

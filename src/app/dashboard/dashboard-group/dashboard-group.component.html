@@ -1,15 +1,30 @@
 <div class="card">
-  <div class="card-header" id="headingOne">
+  <div class="card-header" id="headingOne" (click)="expand()">
     <h5 class="mb-0">
-      <button (click)="expand()" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
         {{ this.group.name }}
       </button>
     </h5>
   </div>
-
+  
   <div id="collapseOne" class="collapse {{this.collapseClass}}" aria-labelledby="headingOne" data-parent="#accordion">
     <div class="card-body">
-      {{ this.group.description }}
+      <div class="container">
+        <div class="row">
+          <div class="col-md panel panel-default">
+            {{ this.group.description }}
+          </div>
+        </div>
+        <br/>
+        <div class="row">
+          <div class="col-md">
+            <button class="btn btn-outline-info">Enter Group</button>
+          </div>
+          <div class="col-md">
+            <button class="btn btn-outline-info">Manage Group</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

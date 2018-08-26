@@ -11,12 +11,12 @@ import { getDummyGroups } from './mockData'
 export class DashboardComponent implements OnInit {
   private groups: Group[]
 
-  constructor(
+  constructor
+  (
     private userService: UserService,
     private router: Router,
   ) {
     this.groups = getDummyGroups()
-    console.log(this.groups)
   }
 
   ngOnInit() {

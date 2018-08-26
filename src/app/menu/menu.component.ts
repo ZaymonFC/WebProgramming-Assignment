@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router'
 import { UserService } from '../services/user.service';
 
@@ -8,6 +8,7 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
+  @Input() title: string
   private loggedIn: boolean
   private username: string
   private routeName: string
