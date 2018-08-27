@@ -6,8 +6,7 @@ import {
   updateItems,
   deleteItems
 } from './data-access/repository'
-import { sanitiseUserObject } from './sanitizers';
-
+import { sanitiseUserObject, sanitiseGroupObject } from './sanitizers';
 
 const uuid = require('uuid/v4')
 const path = require('path')
@@ -15,7 +14,8 @@ let express = require('express')
 let app = express()
 
 const dataFiles = {
-  userFile: 'server/data/user.json'
+  UserFile: 'server/data/user.json',
+  GroupFile: 'server/data/group.json'
 }
 
 let http = require('http')
@@ -34,11 +34,12 @@ require('./socket.js')(app, io)
 
 //
 // ─── USER ROUTES ────────────────────────────────────────────────────────────────
+const readUserFile = ReadJSON.bind(null, dataFiles.UserFile)
+const writeUserFile = WriteJSON.bind(null, dataFiles.UserFile)
 
 // List
 app.post('/user', async (req, res) => {
   console.info('Requested top users')
-  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
   const selectNUsers = selectN.bind(null, readUserFile)
 
   const users = await selectNUsers(100)
@@ -49,14 +50,12 @@ app.post('/user', async (req, res) => {
 app.post('/user/:id', async (req, res) => {
   console.info('Requested user: ', req.params.id)
 
-  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
   const selectUser = findItems.bind(null, readUserFile)
-
   const selector = {
     id: req.params.id
   }
-
   const user = await selectUser(selector)
+
   res.json(user[0])
 })
 
@@ -70,8 +69,7 @@ app.put('/user', async (req, res) => {
   }
   user.id = uuid()
   
-  const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
-  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
+  // Partial Application
   const uniqueFields = ['id', 'username']
   const insertUser = insertItems.bind(null, readUserFile, writeUserFile, uniqueFields)
 
@@ -83,7 +81,7 @@ app.put('/user', async (req, res) => {
       return
     }
   }
-  res.sendStatus(200)
+  res.send()
 })
 
 // Update
@@ -95,8 +93,23 @@ app.patch('/user/:id', async (req, res) => {
   }
 
   // Partial Application
-  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
-  const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
+  const updateUser = updateItems.bind(null, readUserFile, writeUserFile, selector)
+
+  await updateUser(changes)
+  res.send("OK")
+})
+
+const entities = ['User', 'Group']
+
+// Update
+app.patch('/user/:id', async (req, res) => {
+  console.log('Updating user')
+  const changes = req.body
+  const selector = {
+    id: req.params.id
+  }
+
+  // Partial Application
   const updateUser = updateItems.bind(null, readUserFile, writeUserFile, selector)
 
   await updateUser(changes)
@@ -108,11 +121,76 @@ app.delete('/user/:id', async (req, res) => {
   console.log('Deleting user')
 
   // Partial Application
-  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
-  const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
   const deleteUser = deleteItems.bind(null, readUserFile, writeUserFile)
 
   await deleteUser({
+    id: req.params.id
+  })
+
+  res.send("OK")
+})
+
+//
+// ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
+//
+const readGroupFile = ReadJSON.bind(null, dataFiles.GroupFile)
+const writeGroupFile = WriteJSON.bind(null, dataFiles.GroupFile)
+
+// Get Groups
+app.post('/group', async (req, res) => {
+  // Partial Application
+  const selectNGroups = selectN.bind(null, readGroupFile)
+
+  const groups = await selectNGroups(100)
+  res.send(groups)
+})
+
+// Create Group
+app.put('/group', async (req, res) => {
+  console.log('Creating group')
+  const group = sanitiseGroupObject(req.body)
+  if (group == null) {
+    res.sendStatus(400)
+  }
+  group.id = uuid()
+
+  const uniqueFields = ['id', 'name']
+  const insertGroup = insertItems.bind(null, readGroupFile, writeGroupFile, uniqueFields)
+
+  try {
+    await insertGroup(group)
+  } catch (e) {
+    if (e.message === 'not-unique') {
+      res.send('not-unique')
+      return
+    }
+  }
+  res.send(group.id)
+})
+
+// Update
+app.patch('/group/:id', async (req, res) => {
+  console.log('Updating Group')
+  const changes = req.body
+  const selector = {
+    id: req.params.id
+  }
+
+  // Partial Application
+  const updateGroup = updateItems.bind(null, readGroupFile, writeGroupFile, selector)
+
+  await updateGroup(changes)
+  res.send("OK")
+})
+
+// Delete
+app.delete('/group/:id', async (req, res) => {
+  console.log('Deleting Group')
+
+  // Partial Application
+  const deleteGroup = deleteItems.bind(null, readGroupFile, writeGroupFile)
+
+  await deleteGroup({
     id: req.params.id
   })
 
