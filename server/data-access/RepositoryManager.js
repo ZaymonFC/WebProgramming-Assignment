@@ -1,68 +1,46 @@
-import { resolve } from "path";
+export async function findItems(ReadJSON, selector) {
+    const data = await ReadJSON()
+    return data.filter(element => selectItem(element, selector))
+}
 
-// Function to build a repository manager which takes an injected fileHandler
-
-export default function makeRepositoryManager( fileHandler ) {
-
-  return Object.freeze(
-    FindItems,
-    insertItems,
-    deleteItems,
-    updateItems
-  )
-
-  function FindItems(selector) {
-    try {
-      const data = await fileHandler.ReadJSON()
-      return data.filter(item => (
-        Object.entries(selector).every((key, value) => item[key] && item[key] === value)
-      ))
-    } catch (error) {
-      console.error('Something went wrong finding items with selector: ', selector)
-    }
+export async function insertItems(ReadJSON, WriteJSON, object) {
+  let items = await ReadJSON()
+  if (items.some(element => element.id === object.id)) {
+    console.erorr('Can\'t add object because ID is not unique')
+    return
   }
+  
+  items.push(object)
+  await WriteJSON(items)
+}
 
-  function findItems(selector) {
-    return new Promise((resolve, reject) => {
-      fileHandler.readJSON()
-        .then(results => {
-          resolve(results.filter(item =>
-            Object.entries(selector).every((key, value) => item[key] && item[key] === value)
-          ))
-        })
-        .catch((err) => {
-          reject('Failed to find items: ' + err)
-        })
-    })
-  }
+export async function updateItems(ReadJSON, WriteJSON, selector, changes) {
+  const items = await ReadJSON()
+  const transformedItems = items.map(element => {
+    return selectItem(element, selector) ? transformElement(element, changes) : element
+  })
+  await WriteJSON(transformedItems)
+}
 
-  function insertItems(object) {
+export async function deleteItems(ReadJSON, WriteJSON, selector) {
+  const itemsPromise = ReadJSON()
+  const itemsToDeletePromise = findItems(selector)
+  const [items, itemsToDelete] = await Promise.all([itemsPromise, itemsToDeletePromise])
 
-  }
+  const postDelete = items.filter(element => (
+    itemsToDelete.every(elementToDelete => element.id !== elementToDelete.id)
+  ))
 
-  function updateItems(selector) {
+  await WriteJSON(postDelete)
+}
 
-  }
+function selectItem(object, selector) {
+  return Object.entries(selector).every((key, value) => object[key] && object[key] == value)
+}
 
-  function deleteItems(selector) {
-    return new Promise((resolve, reject) => {
-      fileHandler.readJSON()
-        .then(result => {
-          for (let item of result) {
-            for (const [key, value] in Object.entries(item)) {
-              if (item.key && item.key === value) {
-                item.deleted = true
-              }
-            }
-          }
-          const postDeletion = result.map((item) => !item.deleted)
-          fileHandler.writeJSON(postDeletion)
-            .then(() => resolve())
-            .catch(err => reject('Error storing data post deletion' + err))
-        })
-        .catch(err => {
-          reject('Failed to deleted items: ' + err)
-        })
-    })
+function transformElement(element, changes) {
+  return {
+    ...element,
+    ...changes
   }
 }

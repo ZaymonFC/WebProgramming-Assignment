@@ -1,28 +1,20 @@
 import fs from "fs";
 
-export default function makeFileHandler(fileName) {
-  return Object.freeze({
-    // checkFileStatus,
-    ReadJSON,
-    WriteJSON
-  });
-  
-  async function ReadJSON() {
-    try {
-      const data = await fs.readFile(filename);
-      return JSON.stringify(data);
-    } catch (error) {
-      console.error('Something went wrong reading JSON', error);
-      return null;
-    }
+export async function ReadJSON(filename) {
+  try {
+    const data = await fs.readFile(filename);
+    return JSON.stringify(data);
+  } catch (error) {
+    console.error("Something went wrong reading JSON file: ", filename, error.message);
+    return null;
   }
-
-  async function WriteJSON(data) {
-    try {
-      await fs.writeFile(JSON.stringify(data));
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
 }
+
+export async function WriteJSON(filename, data) {
+  try {
+    await fs.writeFile(JSON.stringify(data));
+  } catch (error) {
+    console.error("Error writing JSON to file: ", filename, error.message);
+  }
+}
+
