@@ -1,20 +1,26 @@
 import fs from "fs";
 
 export async function ReadJSON(filename) {
-  try {
-    const data = await fs.readFile(filename);
-    return JSON.stringify(data);
-  } catch (error) {
-    console.error("Something went wrong reading JSON file: ", filename, error.message);
-    return null;
-  }
+  return new Promise((resolve, reject) => {
+    fs.readFile(filename, (err, data) => {
+      if (err) {
+        console.error("Something went wrong reading JSON file: ", filename);
+        reject(err)
+      }
+      resolve(JSON.parse(data))
+    })
+  })
 }
 
 export async function WriteJSON(filename, data) {
-  try {
-    await fs.writeFile(JSON.stringify(data));
-  } catch (error) {
-    console.error("Error writing JSON to file: ", filename, error.message);
-  }
+  return new Promise((resolve, reject) => {
+    fs.writeFile(filename, JSON.stringify(data), (err) => {
+      if (err) {
+        console.error("Something went wrong writing to JSON file: ", filename)
+        reject(err)
+      }
+      resolve()
+    })
+  })
 }
 

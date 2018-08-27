@@ -14,6 +14,9 @@
   "babel": {
     "presets": [
       "env"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-object-rest-spread"
     ]
   },
   "private": true,
@@ -27,6 +30,7 @@
     "@angular/platform-browser": "^6.1.0",
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-rc.3",
     "@types/socket.io-client": "^1.4.32",
     "chai": "^4.1.2",
     "classnames": "^2.2.6",
