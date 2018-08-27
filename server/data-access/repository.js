@@ -1,3 +1,4 @@
+
 export async function findItems(ReadJSON, selector) {
   try {
     const data = await ReadJSON()
@@ -17,11 +18,14 @@ export async function selectN(ReadJSON, count) {
   return null
 }
 
-export async function insertItems(ReadJSON, WriteJSON, object) {
+export async function insertItems(ReadJSON, WriteJSON, uniqueFields = ['id'], object) {
   let items = await ReadJSON()
-  if (items.some(element => element.id === object.id)) {
-    console.erorr("Can't add object because item is not unique")
-    return
+  
+  console.log(uniqueFields, object)
+
+  if (items.some(element => uniqueFields.some(field => element[field] == object[field]))) {
+    console.error("Can't add object because item is not unique")
+    throw new Error("not-unique")
   }
 
   items.push(object)
@@ -39,17 +43,9 @@ export async function updateItems(ReadJSON, WriteJSON, selector, changes) {
 }
 
 export async function deleteItems(ReadJSON, WriteJSON, selector) {
-  const itemsPromise = ReadJSON()
-  const itemsToDeletePromise = findItems(ReadJSON, selector)
-  const [items, itemsToDelete] = await Promise.all([
-    itemsPromise,
-    itemsToDeletePromise
-  ])
+  const items = await ReadJSON()
 
-  const postDelete = items.filter(element =>
-    itemsToDelete.every(elementToDelete => element.id !== elementToDelete.id)
-  )
-
+  const postDelete = items.filter(element => !selectItem(element, selector))
   await WriteJSON(postDelete)
 }
 

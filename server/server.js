@@ -8,6 +8,7 @@ import {
 } from './data-access/repository'
 import { sanitiseUserObject } from './sanitizers';
 
+
 const uuid = require('uuid/v4')
 const path = require('path')
 let express = require('express')
@@ -65,18 +66,58 @@ app.put('/user', async (req, res) => {
   const user = sanitiseUserObject(req.body)
   if (user == null) {
     res.sendStatus(400)
-    res.end()
     return
   }
   user.id = uuid()
   
   const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
-  const insertUser = insertItems(null, writeUserFile)
+  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
+  const uniqueFields = ['id', 'username']
+  const insertUser = insertItems.bind(null, readUserFile, writeUserFile, uniqueFields)
 
-  await insertUser(user)
-  res.sendStatus(200).send("OK")
+  try {
+    await insertUser(user)
+  } catch (e) {
+    if (e.message === 'not-unique') {
+      res.send("not-unique")
+      return
+    }
+  }
+  res.sendStatus(200)
 })
 
+// Update
+app.patch('/user/:id', async (req, res) => {
+  console.log('Updating user')
+  const changes = req.body
+  const selector = {
+    id: req.params.id
+  }
+
+  // Partial Application
+  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
+  const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
+  const updateUser = updateItems.bind(null, readUserFile, writeUserFile, selector)
+
+  await updateUser(changes)
+  res.send("OK")
+})
+
+// Delete
+app.delete('/user/:id', async (req, res) => {
+  console.log('Deleting user')
+
+  // Partial Application
+  const readUserFile = ReadJSON.bind(null, dataFiles.userFile)
+  const writeUserFile = WriteJSON.bind(null, dataFiles.userFile)
+  const deleteUser = deleteItems.bind(null, readUserFile, writeUserFile)
+
+  await deleteUser({
+    id: req.params.id
+  })
+
+  res.send("OK")
+})
 
 //
 // ─── SERVER START ───────────────────────────────────────────────────────────────
