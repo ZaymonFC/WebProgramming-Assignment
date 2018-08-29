@@ -87,13 +87,14 @@ function transformElement(element, changes) {
 }
 
 function insertForeignKeyToElement(element, foreignKey) {
-  const [key, value] = Object.entries(foreignKey)[0]
-  element[key].push(value)
+  if (!element[foreignKey.key]) {
+    element[foreignKey.key] = []
+  }
+  element[foreignKey.key].push(foreignKey.value)
   return element
 }
 
 function removeForeignKeyFromElement(element, foreignKey) {
-  const [key, value] = Object.entries(foreignKey)[0]
-  element[key] = element[key].filter(e => e !== value)
+  element[foreignKey.key] = element[foreignKey.key].filter(e => e !== foreignKey.value)
   return element
 }
