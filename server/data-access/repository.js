@@ -29,7 +29,7 @@ export async function insertItems(ReadJSON, WriteJSON, uniqueFields = ['id'], ob
   }
 
   items.push(object)
-  await WriteJSON(items)
+  return await WriteJSON(items)
 }
 
 export async function updateItems(ReadJSON, WriteJSON, selector, changes) {
@@ -39,7 +39,7 @@ export async function updateItems(ReadJSON, WriteJSON, selector, changes) {
       ? transformElement(element, changes)
       : element
   })
-  await WriteJSON(transformedItems)
+  return await WriteJSON(transformedItems)
 }
 
 export async function deleteItems(ReadJSON, WriteJSON, selector) {
@@ -51,14 +51,14 @@ export async function deleteItems(ReadJSON, WriteJSON, selector) {
 
 export async function insertForeignKey(ReadJSON, WriteJSON, selector, foreignKey) {
   const items = await ReadJSON()
-
+  
   const transformedItems = items.map(element => {
     return selectItem(element, selector)
       ? insertForeignKeyToElement(element, foreignKey)
       : element
   })
 
-  await WriteJSON(transformedItems)
+  return await WriteJSON(transformedItems)
 }
 
 export async function removeForeignKey(ReadJSON, WriteJSON, selector, foreignKey) {
@@ -70,7 +70,7 @@ export async function removeForeignKey(ReadJSON, WriteJSON, selector, foreignKey
       : element
   })
 
-  await WriteJSON(transformedItems)
+  return await WriteJSON(transformedItems)
 }
 
 function selectItem(object, selector) {

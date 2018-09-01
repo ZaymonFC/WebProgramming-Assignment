@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router'
 import { SocketService } from '../services/socket.service';
-import { Observable, Subscription } from 'rxjs';
-import { UserService } from '../services/user.service';
+import { Subscription } from 'rxjs';
+import { UserService } from '../services/user.service'
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -37,7 +37,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.connection = this.socketService.getMessages()
       .subscribe(message => {
         this.messages.push(message)
-        this.message = '';
+        this.message = ''
       })
   }
 

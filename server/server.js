@@ -18,6 +18,11 @@ const dataFiles = {
   GroupFile: 'server/data/group.json'
 }
 
+const uniqueFields = {
+  User: ['id', 'username'],
+  Group: ['id', 'name']
+}
+
 let http = require('http')
 let server = http.Server(app)
 
@@ -37,8 +42,25 @@ require('./socket.js')(app, io)
 const readUserFile = ReadJSON.bind(null, dataFiles.UserFile)
 const writeUserFile = WriteJSON.bind(null, dataFiles.UserFile)
 
+// Logging in
+app.get('/login/:username', async (req, res) => {
+  console.info('Attempting Log In')
+  
+  // PA
+  const findUser = findItems.bind(null, readUserFile)
+  const user = await findUser({
+    username: req.params.username
+  })
+
+  if (user.length == 0) {
+    res.send(undefined)
+  } else {
+    res.send(user[0])
+  }
+})
+
 // List
-app.post('/user', async (req, res) => {
+app.get('/user', async (req, res) => {
   console.info('Requested top users')
   const selectNUsers = selectN.bind(null, readUserFile)
 
@@ -47,7 +69,7 @@ app.post('/user', async (req, res) => {
 })
 
 // Find by ID 
-app.post('/user/:id', async (req, res) => {
+app.get('/user/:id', async (req, res) => {
   console.info('Requested user: ', req.params.id)
 
   const selectUser = findItems.bind(null, readUserFile)
@@ -60,18 +82,17 @@ app.post('/user/:id', async (req, res) => {
 })
 
 // Create
-app.put('/user', async (req, res) => {
+app.post('/user', async (req, res) => {
   console.log('Creating user')
   const user = sanitiseUserObject(req.body)
   if (user == null) {
-    res.sendStatus(400)
+    res.send(null)
     return
   }
   user.id = uuid()
   
   // Partial Application
-  const uniqueFields = ['id', 'username']
-  const insertUser = insertItems.bind(null, readUserFile, writeUserFile, uniqueFields)
+  const insertUser = insertItems.bind(null, readUserFile, writeUserFile, uniqueFields.User)
 
   try {
     await insertUser(user)
@@ -137,7 +158,7 @@ const readGroupFile = ReadJSON.bind(null, dataFiles.GroupFile)
 const writeGroupFile = WriteJSON.bind(null, dataFiles.GroupFile)
 
 // Get Groups
-app.post('/group', async (req, res) => {
+app.get('/group', async (req, res) => {
   // Partial Application
   const selectNGroups = selectN.bind(null, readGroupFile)
 
@@ -145,8 +166,18 @@ app.post('/group', async (req, res) => {
   res.send(groups)
 })
 
+app.get('/group/:id', async (req, res) => {
+  // PA
+  const findGroup = findItems.bind(null, readGroupFile)
+
+  const group = await findGroup({
+    id: req.params.id
+  })
+  res.json(group[0])
+})
+
 // Create Group
-app.put('/group', async (req, res) => {
+app.post('/group', async (req, res) => {
   console.log('Creating group')
   const group = sanitiseGroupObject(req.body)
   if (group == null) {

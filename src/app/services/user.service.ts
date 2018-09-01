@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '../types/user';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment'
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +10,24 @@ export class UserService {
   private loggedIn: boolean
   private user: User
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   logInUser(username): void {
-    const user = {
-      username: username,
-      type: null
-    }
+
+    this.http.get(environment.API_URL + '/login/' + username)
+      .subscribe((response: User) => {
+        if (response != null) {
+          this.initSession(response)
+        }
+      },
+      (err) => {
+        console.error(err)
+      })
+  }
+
+  initSession(user: User) {
     sessionStorage.setItem('user', JSON.stringify(user))
+    this.user = user
     this.loggedIn = true
   }
 
@@ -27,26 +39,15 @@ export class UserService {
   }
 
   userLoggedIn (): boolean {
-    this.updateUserInformation()
-    return this.loggedIn
+    return this.user != null
   }
 
   getUser(): User {
     return this.user
   }
 
-  private updateUserInformation(): void {
-    if (!sessionStorage.getItem('user')) {
-      this.loggedIn = false
-      this.cleanSession()
-    } else {
-      const user = JSON.parse(sessionStorage.getItem('user'))
-      this.loggedIn = true
-      this.user = {
-        username: user.username,
-        userType: user.type
-      }
-    }
+  getUsers() {
+    return this.http.get(environment.API_URL + '/user')
   }
 
   private cleanSession(): void {

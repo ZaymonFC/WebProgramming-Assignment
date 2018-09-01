@@ -1,15 +1,25 @@
-<div class="container">
-  <ul class="list-group">
-    <li *ngFor="let message of messages" class="list-item">
-      {{message.text}}
-    </li>
-  </ul>
-</div>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      Channel Name
+    </div>
+    <div class="card-body">
+      <ul class="list-group" #autoScroller [scrollTop]="autoScroller.scrollHeight">
+        <li *ngFor="let message of messages" class="list-item">
+          {{message.text}}
+        </li>
+      </ul>
 
-<br/>
+      <br/>
 
-<div class="form-group">
-  <label  for="message">Enter Message:</label>
-  <input (keyup)="keyUp($event.key)" type="text" class="form-control" [(ngModel)]="message">
+
+    </div>
+    <div class="card-footer">
+      <div class="form-group">
+        <label for="message">Enter Message:</label>
+        <input (keyup)="keyUp($event.key)" type="text" class="form-control" [(ngModel)]="message">
+      </div>
+      <button (click)="sendMessage()" class="btn btn-outline-success">Send Message</button>
+    </div>
+  </div>
 </div>
-<button (click)="sendMessage()" class="btn btn-outline-success">Send Message</button>

@@ -34,3 +34,4 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
         - Has an email address
 
 > Initially there is one user called Super who is also a super admin.
+

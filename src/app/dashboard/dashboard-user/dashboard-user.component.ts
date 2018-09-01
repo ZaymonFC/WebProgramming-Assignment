@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Group } from 'src/app/types/group';
+import { User } from 'src/app/types/user';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-dashboard-group',
-  templateUrl: './dashboard-group.component.html',
-  styleUrls: ['./dashboard-group.component.css']
+  selector: 'app-dashboard-user',
+  templateUrl: './dashboard-user.component.html',
+  styleUrls: ['./dashboard-user.component.css']
 })
-export class DashboardGroupComponent implements OnInit {
-  @Input() group: Group
+export class DashboardUserComponent implements OnInit {
+  @Input() user: User
   private collapseClass: string
   private collapsed: boolean
 
@@ -25,9 +25,8 @@ export class DashboardGroupComponent implements OnInit {
     this.collapsed = !this.collapsed
   }
 
-  groupDetail() {
-    console.log(this.group.id)
-    this.router.navigate(['/group', this.group.id])
+  userDetail() {
+    console.log(this.user.id)
+    this.router.navigate(['/user', this.user.id])
   }
-
 }

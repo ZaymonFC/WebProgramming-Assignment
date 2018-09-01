@@ -18,7 +18,7 @@
       </li> -->
     </ul>
     <form *ngIf="loggedIn" class="form-inline my-2 my-lg-0">
-      <label class="mr-sm-2">Logged in as {{ username }}</label>
+      <label class="mr-sm-2">Logged in as {{ user.username }}</label>
       <button class="btn btn-outline-primary my-2 my-sm-0" (click)='logOut()'>Logout</button>
     </form>
   </div>

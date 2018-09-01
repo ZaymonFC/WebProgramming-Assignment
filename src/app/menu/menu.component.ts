@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { Router } from '@angular/router'
 import { UserService } from '../services/user.service';
+import { User } from 'src/app/types/user';
 
 @Component({
   selector: 'app-menu',
@@ -10,7 +11,7 @@ import { UserService } from '../services/user.service';
 export class MenuComponent implements OnInit {
   @Input() title: string
   private loggedIn: boolean
-  private username: string
+  private user: User
   private routeName: string
 
   constructor(private router: Router, private userService: UserService) {
@@ -18,7 +19,7 @@ export class MenuComponent implements OnInit {
     router.events.subscribe(() => {
       this.loggedIn = userService.userLoggedIn()
       if (this.userService.userLoggedIn()) {
-        this.username = userService.getUser().username
+        this.user = userService.getUser()
       }
     })
   }
@@ -30,6 +31,6 @@ export class MenuComponent implements OnInit {
     this.userService.logOutUser()
     this.router.navigateByUrl('')
     this.loggedIn = false
-    this.username = null
+    this.user = null
   }
 }

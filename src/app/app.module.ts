@@ -14,6 +14,9 @@ import { NotFoundComponent } from './not-found/not-found.component';
 import { MenuComponent } from './menu/menu.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardGroupComponent } from './dashboard/dashboard-group/dashboard-group.component';
+import { GroupComponent } from './group/group.component';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-user.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { DashboardGroupComponent } from './dashboard/dashboard-group/dashboard-g
     MenuComponent,
     DashboardComponent,
     DashboardGroupComponent,
+    GroupComponent,
+    DashboardUserComponent,
   ],
   imports: [
     BrowserModule,

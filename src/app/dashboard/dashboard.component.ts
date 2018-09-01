@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Group } from '../types/group';
-import { UserService } from '../services/user.service';
-import { Router } from '@angular/router';
-import { getDummyGroups } from './mockData'
+import { Component, OnInit } from '@angular/core'
+import { Group } from '../types/group'
+import { UserService } from '../services/user.service'
+import { Router } from '@angular/router'
+import { GroupService } from '../group/group.service'
+import { User } from 'src/app/types/user'
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -10,14 +11,13 @@ import { getDummyGroups } from './mockData'
 })
 export class DashboardComponent implements OnInit {
   private groups: Group[]
+  private users: User[]
 
-  constructor
-  (
+  constructor(
     private userService: UserService,
     private router: Router,
-  ) {
-    this.groups = getDummyGroups()
-  }
+    private groupService: GroupService
+  ) {}
 
   ngOnInit() {
     // Check if the user is logged in
@@ -25,7 +25,13 @@ export class DashboardComponent implements OnInit {
       this.router.navigateByUrl('')
       return
     }
-    // this.groups = getDummyGroups()
-  }
 
+    this.groupService
+      .getGroups()
+      .subscribe((data: Group[]) => (this.groups = data))
+
+    this.userService
+      .getUsers()
+      .subscribe((data: User[]) => (this.users = data))
+  }
 }

@@ -2,26 +2,23 @@
   <div class="card-header" id="headingOne" (click)="expand()">
     <h5 class="mb-0">
       <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        {{ this.group.name }}
+        {{ this.user.username }}
       </button>
     </h5>
   </div>
-  
+
   <div id="collapseOne" class="collapse {{this.collapseClass}}" aria-labelledby="headingOne" data-parent="#accordion">
     <div class="card-body">
       <div class="container">
         <div class="row">
           <div class="col-md panel panel-default">
-            {{ this.group.description }}
+            {{ this.user.email }}
           </div>
         </div>
         <br/>
         <div class="row">
           <div class="col-md">
-            <button class="btn btn-outline-info" (click)="groupDetail()">Enter Group</button>
-          </div>
-          <div class="col-md">
-            <button class="btn btn-outline-info">Manage Group</button>
+            <button class="btn btn-outline-info" (click)="userDetail()">Manage User</button>
           </div>
         </div>
       </div>

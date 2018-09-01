@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.loggedIn = this.userService.userLoggedIn()
+    this.loggedIn = this.userService.userLoggedIn()
   }
 
   loginUser(event: Event) {
@@ -40,7 +40,13 @@ export class HomeComponent implements OnInit {
     }
 
     this.userService.logInUser(this.username)
-    this.router.navigateByUrl('dashboard')
-  }
 
+    if (this.userService.userLoggedIn()) {
+      this.router.navigateByUrl('dashboard')
+    } else {
+      this.statusMessage = 'That user does not exist on the server'
+      this.showError = true
+    }
+  }
 }
+

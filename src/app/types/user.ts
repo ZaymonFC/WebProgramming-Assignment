@@ -1,4 +1,6 @@
 export interface User {
-    username: string
-    userType: string
+  id: string
+  username: string
+  rank: string
+  email: string
 }

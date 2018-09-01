@@ -7,13 +7,15 @@ import { HomeComponent } from '../home/home.component'
 import { ChatComponent } from '../chat/chat.component'
 import { NotFoundComponent } from '../not-found/not-found.component'
 import { DashboardComponent } from '../dashboard/dashboard.component';
+import { GroupComponent } from '../group/group.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'chat', component: ChatComponent },
   { path: '404', component: NotFoundComponent },
   { path: 'dashboard', component: DashboardComponent },
-  { path: '**', redirectTo: '404'}
+  { path: 'group/:id', component: GroupComponent },
+  { path: '**', redirectTo: '404'},
 ]
 
 @NgModule({

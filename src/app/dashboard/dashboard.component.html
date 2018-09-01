@@ -16,8 +16,14 @@
     <div class="col-md-6">
       <h3>Manage Users</h3>
       <dl>
-        <dt>Description lists</dt>
+        <dt>
+          Currently there are <span class="badge badge-primary">{{users == null ? 0 : users.length}}</span> users.
+        </dt>
       </dl>
+
+      <div class="accordion scrollable" id="accordion">
+        <app-dashboard-user *ngFor="let u of this.users" [user]="u"></app-dashboard-user>
+      </div>
     </div>
   </div>
   <br>
