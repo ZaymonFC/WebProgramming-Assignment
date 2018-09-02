@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { User } from 'src/app/types/user';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { User } from 'src/app/types/user'
+import { Router } from '@angular/router'
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard-user',
@@ -9,10 +10,15 @@ import { Router } from '@angular/router';
 })
 export class DashboardUserComponent implements OnInit {
   @Input() user: User
+  @Output() emitter: EventEmitter<string> = new EventEmitter()
+
   private collapseClass: string
   private collapsed: boolean
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private service: UserService,
+  ) {
     this.collapseClass = 'hide'
     this.collapsed = true
   }
@@ -28,5 +34,12 @@ export class DashboardUserComponent implements OnInit {
   userDetail() {
     console.log(this.user.id)
     this.router.navigate(['/user', this.user.id])
+  }
+
+  removeUser() {
+    this.service.removeUser(this.user.id)
+      .subscribe(data => console.log(data))
+
+    this.emitter.emit(this.user.id)
   }
 }

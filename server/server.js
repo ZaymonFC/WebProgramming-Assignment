@@ -7,7 +7,8 @@ import {
   deleteItems,
   insertForeignKey,
   removeForeignKey,
-  removeReference
+  removeReference,
+  deleteCollection
 } from './data-access/repository'
 import { sanitiseUserObject, sanitiseGroupObject, sanitiseChannelObject } from './sanitizers';
 
@@ -25,7 +26,7 @@ const dataFiles = {
 const uniqueFields = {
   User: ['id', 'username'],
   Group: ['id', 'name'],
-  Channel: ['name']
+  Channel: ['id'],
 }
 
 let http = require('http')
@@ -95,7 +96,7 @@ app.get('/user/:id', async (req, res) => {
   res.json(user.shift())
 })
 
-// Create
+// Create user
 app.post('/user', async (req, res) => {
   console.log('Creating user')
   const user = sanitiseUserObject(req.body)
@@ -116,7 +117,7 @@ app.post('/user', async (req, res) => {
       return
     }
   }
-  res.send()
+  res.send(user)
 })
 
 // Update
@@ -136,21 +137,6 @@ app.patch('/user/:id', async (req, res) => {
 
 const entities = ['User', 'Group']
 
-// Update
-app.patch('/user/:id', async (req, res) => {
-  console.log('Updating user')
-  const changes = req.body
-  const selector = {
-    id: req.params.id
-  }
-
-  // Partial Application
-  const updateUser = updateItems.bind(null, readUser, writeUser, selector)
-
-  await updateUser(changes)
-  res.send("OK")
-})
-
 // Delete
 app.delete('/user/:id', async (req, res) => {
   console.log('Deleting user')
@@ -162,7 +148,7 @@ app.delete('/user/:id', async (req, res) => {
     id: req.params.id
   })
 
-  res.send("OK")
+  res.send({ status: "OK" })
 })
 
 //
@@ -228,13 +214,13 @@ app.post('/group', async (req, res) => {
 
   try {
     await insertGroup(group)
+    res.send(group)
   } catch (e) {
     if (e.message === 'not-unique') {
       res.send('not-unique')
       return
     }
   }
-  res.send(group.id)
 })
 
 // Update Group
@@ -255,14 +241,26 @@ app.patch('/group/:id', async (req, res) => {
 app.delete('/group/:id', async (req, res) => {
   console.log('Deleting Group')
 
+  // Get the group
+  const findGroup = findItems.bind(null, readGroup)
+  const items = await findGroup({ id: req.params.id })
+  const group = items.shift()
+  console.log(group)
   // Partial Application
   const deleteGroup = deleteItems.bind(null, readGroup, writeGroup)
 
   await deleteGroup({
-    id: req.params.id
+    id: group.id
   })
 
-  res.send("OK")
+  // Delete all channels that were members of the group
+  const deleteChannels = deleteCollection.bind(null, readChannel, writeChannel)
+  console.log('Channels', group.channels)
+  if (group.channels) {
+    deleteChannels(group.channels)
+  }
+
+  res.send({status: "OK"})
 })
 
 

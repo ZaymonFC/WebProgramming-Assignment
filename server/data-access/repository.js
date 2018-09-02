@@ -49,6 +49,13 @@ export async function deleteItems(ReadJSON, WriteJSON, selector) {
   await WriteJSON(postDelete)
 }
 
+export async function deleteCollection(ReadJSON, WriteJSON, ids) {
+  const items = await ReadJSON()
+
+  const postDelete = items.filter(element => !ids.includes(element.id))
+  return await WriteJSON(postDelete)
+}
+
 export async function insertForeignKey(ReadJSON, WriteJSON, selector, foreignKey) {
   const items = await ReadJSON()
   

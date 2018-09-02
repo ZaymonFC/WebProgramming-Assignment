@@ -1,6 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, Host } from '@angular/core';
 import { Group } from 'src/app/types/group';
 import { Router } from '@angular/router';
+import { GroupService } from '../../group/group.service';
+import { UserService } from '../../services/user.service';
+import { DashboardComponent } from '../dashboard.component';
 
 @Component({
   selector: 'app-dashboard-group',
@@ -12,7 +15,13 @@ export class DashboardGroupComponent implements OnInit {
   private collapseClass: string
   private collapsed: boolean
 
-  constructor(private router: Router) {
+  @Output() emitter: EventEmitter<string> = new EventEmitter()
+
+  constructor(
+    private router: Router,
+    private service: GroupService,
+    private userService: UserService,
+  ) {
     this.collapseClass = 'hide'
     this.collapsed = true
   }
@@ -28,6 +37,12 @@ export class DashboardGroupComponent implements OnInit {
   groupDetail() {
     console.log(this.group.id)
     this.router.navigate(['/group', this.group.id])
+  }
+
+  removeGroup() {
+    this.service.removeGroup(this.group.id)
+      .subscribe((data: any) => console.log(data))
+    this.emitter.emit(this.group.id)
   }
 
 }

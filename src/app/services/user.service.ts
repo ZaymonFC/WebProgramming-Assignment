@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../types/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,20 +10,21 @@ import { environment } from 'src/environments/environment'
 export class UserService {
   private loggedIn: boolean
   private user: User
+  private url = environment.API_URL + '/user'
 
   constructor(private http: HttpClient) { }
 
   logInUser(username): void {
 
     this.http.get(environment.API_URL + '/login/' + username)
-      .subscribe((response: User) => {
-        if (response != null) {
-          this.initSession(response)
-        }
-      },
-      (err) => {
-        console.error(err)
-      })
+    .subscribe((response: User) => {
+      if (response != null) {
+        this.initSession(response)
+      }
+    },
+    (err) => {
+      console.error(err)
+    })
   }
 
   initSession(user: User) {
@@ -53,5 +55,16 @@ export class UserService {
   private cleanSession(): void {
     sessionStorage.removeItem('user')
     this.user = null
+  }
+
+  createUser(username: string, email: string): Observable<Object> {
+    return this.http.post(this.url, {
+      username: username,
+      email: email
+    })
+  }
+
+  removeUser(id: string): any {
+    return this.http.delete(this.url + '/' + id)
   }
 }

@@ -9,14 +9,18 @@
       </dl>
 
       <div class="accordion scrollable" id="accordion">
-        <app-dashboard-group *ngFor="let g of this.groups" [group]="g"></app-dashboard-group>
+        <app-dashboard-group *ngFor="let g of this.groups" (emitter)="removeGroup($event)" [group]="g"></app-dashboard-group>
       </div>
 
       <!-- TODO: Guard this -->
+      <br>
       <form (submit)="createGroup($event)">
+        <h4>Create Group</h4>
         <div class="form-group">
-          <label for="Channel">Create Group:</label>
-          <input type="text" class="form-control" [(ngModel)]='form_createGroup' name="group" placeholder="Group Name">
+          <input type="text" class="form-control" [(ngModel)]='form_groupName' name="name" placeholder="Group Name">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" [(ngModel)]='form_groupDescription' name="channel" placeholder="Group Description">
         </div>
         <input type="submit" class="btn btn-primary" value="Create Group">
       </form>
@@ -31,19 +35,33 @@
       </dl>
 
       <div class="accordion scrollable" id="accordion">
-        <app-dashboard-user *ngFor="let u of this.users" [user]="u"></app-dashboard-user>
+        <app-dashboard-user *ngFor="let u of this.users" (emitter)="removeUser($event)" [user]="u"></app-dashboard-user>
       </div>
+
+      <!-- TODO: Guard this -->
+      <br>
+      <form (submit)="createUser($event)">
+        <h4>Create User</h4>
+        <div class="form-group">
+          <input type="text" class="form-control" [(ngModel)]='form_username' name="username" placeholder="Username">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" [(ngModel)]='form_email' name="email" placeholder="email">
+        </div>
+        <input type="submit" class="btn btn-primary" value="Create User">
+      </form>
     </div>
   </div>
-  <br>
-  <div class="row">
-    <div class="col-md-6">
-      <h3>Manage Admins</h3>
-      <dl>
-        <dt>Description lists</dt>
-      </dl>
-    </div>
-    <!-- <div class="col-md-6">
+</div>
+<br>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Manage Admins</h3>
+    <dl>
+      <dt>Description lists</dt>
+    </dl>
+  </div>
+  <!-- <div class="col-md-6">
       <h3>
         h3. Lorem ipsum dolor sit amet.
       </h3>
@@ -53,5 +71,4 @@
         </dt>
       </dl>
     </div> -->
-  </div>
 </div>

@@ -12,7 +12,7 @@ export function sanitiseUserObject(user) {
 }
 
 export function sanitiseGroupObject(group) {
-  if (!group.name && typeof(user.username) === String) {
+  if (!group.name || !group.description) {
     return null
   }
 

@@ -13,6 +13,12 @@ export class DashboardComponent implements OnInit {
   private groups: Group[]
   private users: User[]
 
+  private form_groupName = ''
+  private form_groupDescription = ''
+
+  private form_username = ''
+  private form_email = ''
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -33,5 +39,39 @@ export class DashboardComponent implements OnInit {
     this.userService
       .getUsers()
       .subscribe((data: User[]) => (this.users = data))
+  }
+
+  createGroup(event: Event) {
+    event.preventDefault()
+    console.log('Creating Group: ', this.form_groupName, this.form_groupDescription)
+    this.groupService.createGroup(this.form_groupName, this.form_groupDescription)
+      .subscribe((data: Group) => {
+        this.groups.push(data)
+        this.form_groupDescription = ''
+        this.form_groupName = ''
+      })
+
+  }
+
+  removeGroup(id) {
+    console.log('Filtering List: ', id)
+    this.groups = this.groups.filter(element => element.id !== id)
+  }
+
+  createUser(event: Event) {
+    event.preventDefault()
+    console.log('Creating User: ', this.form_username, this.form_email)
+
+    this.userService.createUser(this.form_username, this.form_email)
+      .subscribe((data: User) => {
+        this.users.push(data)
+        this.form_username = ''
+        this.form_email = ''
+      })
+  }
+
+  removeUser(id) {
+    console.log('Filtering User List')
+    this.users = this.users.filter(element => element.id !== id)
   }
 }
