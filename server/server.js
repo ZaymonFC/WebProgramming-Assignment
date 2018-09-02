@@ -189,17 +189,16 @@ app.get('/group/:id', async (req, res) => {
   const findUsers = findItems.bind(null, readUser)
   const findChannels = findItems.bind(null, readChannel)
 
-  let group = await findGroup({
+  const items = await findGroup({
     id: req.params.id
   })
 
-  if (group) {
-    group = group.shift()
-  } else {
+  if (!items) {
     res.send('not-found')
     return
   }
 
+  let group = items.shift()
   // Add nested user objects
   if (group.users) {
     group.users = await Promise.all(group.users.map(async (id) => {
@@ -215,7 +214,6 @@ app.get('/group/:id', async (req, res) => {
       return channel.shift()
     }))
   }
-
   res.json(group)
 })
 
