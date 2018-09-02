@@ -208,7 +208,7 @@ app.get('/group/:id', async (req, res) => {
   if(group.channels) {
     group.channels = await Promise.all(group.channels.map(async (id) => {
       let channel = await findChannels({id: id})
-      return channel
+      return channel.shift()
     }))
   }
 
@@ -306,6 +306,7 @@ app.put('/channel', async (req, res) => {
 
 // Delete Channel and All References To It
 app.delete('/channel/:id', async (req, res) => {
+  console.log('Deleting Channel')
   // Remove the channel entity
   const deleteChannel = deleteItems.bind(null, readChannel, writeChannel)
   await deleteChannel({
@@ -313,11 +314,13 @@ app.delete('/channel/:id', async (req, res) => {
   })
 
   // Clear the associated foreign keys from all groups
-  const removeGroupChannelKey = removeReference(null, readChannel, writeChannel)
+  const removeGroupChannelKey = removeReference.bind(null, readGroup, writeGroup)
   await removeGroupChannelKey({
-    key: 'channel',
+    key: 'channels',
     value: req.params.id
   })
+
+  res.send({status: 'OK'})
 })
 
 

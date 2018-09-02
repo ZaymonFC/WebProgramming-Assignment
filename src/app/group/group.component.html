@@ -4,35 +4,37 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-8">
-          <h4 class="card-title">Channels <app-counter [count]="group.channels.length"></app-counter></h4>
+          <h4 class="card-title">Channels
+            <app-counter [count]="group.channels.length"></app-counter>
+          </h4>
           <ul class="list-group">
-              <li class="list-group-item" *ngFor="let channel of group.channels">
+            <li class="list-group-item" *ngFor="let channel of group.channels">
+              <div class="row">
+                <div class="col-md">
+                  <p>{{channel.name}}</p>
+                </div>
                 <div class="row">
                   <div class="col-md">
-                    <p class="lead">{{channel.name}}</p>
+                    <button class="btn btn-outline-info" (click)="enterChannel(channel.id)">Enter Channel</button>
                   </div>
-                  <div class="row">
-                    <div class="col-md">
-                      <button class="btn btn-outline-info" (click)="enterChannel(channel.id)">Enter Channel</button>
-                    </div>
-                    <div class="col-md">
-                        <!-- TODO: Guard This -->
-                      <button class="btn btn-outline-info" (click)="removeChannel(channel.id)">Remove Channel</button>
-                    </div>
-                  </div>      
+                  <div class="col-md">
+                    <!-- TODO: Guard This -->
+                    <button class="btn btn-outline-info" (click)="removeChannel(channel.id)">Remove Channel</button>
+                  </div>
                 </div>
-              </li>
-            </ul>
+              </div>
+            </li>
+          </ul>
           <br>
-          
+
           <!-- TODO: Guard this -->
           <form (submit)="createChannel($event)">
-              <div class="form-group">
-                <label for="Channel">Create Channel:</label>
-                <input type="text" class="form-control" [(ngModel)]='form_createChannel' name="channel" placeholder="Channel Name">
-              </div>
-              <input type="submit" class="btn btn-primary" value="Create Channel">
-            </form>
+            <div class="form-group">
+              <label for="Channel">Create Channel:</label>
+              <input type="text" class="form-control" [(ngModel)]='form_createChannel' name="channel" placeholder="Channel Name">
+            </div>
+            <input type="submit" class="btn btn-primary" value="Create Channel">
+          </form>
 
         </div>
         <div class="col-md-4">

@@ -74,7 +74,7 @@ export async function removeForeignKey(ReadJSON, WriteJSON, selector, foreignKey
 }
 
 export async function removeReference(ReadJSON, WriteJSON, foreignKey) {
-  const items = ReadJSON()
+  const items = await ReadJSON()
   const transformedItems = items.map(element => removeForeignKeyFromElement(element, foreignKey))
 
   return await WriteJSON(transformedItems)

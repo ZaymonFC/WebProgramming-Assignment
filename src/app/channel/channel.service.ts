@@ -18,7 +18,7 @@ export class ChannelService {
     return this.http.put(this.routeUrl, {name: channelName, groupId: groupId})
   }
 
-  removeChannel(channelId: string): void {
-    this.http.delete(this.routeUrl + `/${channelId}`)
+  removeChannel(channelId: string) {
+    return this.http.delete(this.routeUrl + '/' + channelId)
   }
 }

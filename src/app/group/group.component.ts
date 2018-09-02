@@ -36,9 +36,17 @@ export class GroupComponent implements OnInit {
     event.preventDefault()
     this.channelService.createChannel(this.form_createChannel, this.group.id)
       .subscribe((data: Channel) => this.group.channels.push(data))
+    this.form_createChannel = ''
   }
 
   removeChannel(channelId) {
-    this.channelService.removeChannel(channelId, this.group.id)
+    console.log(`Deleting Channel ${channelId}`)
+    this.channelService.removeChannel(channelId)
+      .subscribe((data: any) => console.log(data))
+
+    this.group.channels = this.group.channels.filter(channel => {
+      return channel.id !== channelId
+    })
+
   }
 }
