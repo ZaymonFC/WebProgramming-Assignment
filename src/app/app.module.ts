@@ -17,6 +17,7 @@ import { DashboardGroupComponent } from './dashboard/dashboard-group/dashboard-g
 import { GroupComponent } from './group/group.component';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-user.component';
+import { CounterComponent } from './presentation/counter/counter.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-use
     DashboardGroupComponent,
     GroupComponent,
     DashboardUserComponent,
+    CounterComponent,
   ],
   imports: [
     BrowserModule,

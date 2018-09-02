@@ -15,7 +15,8 @@ let app = express()
 
 const dataFiles = {
   UserFile: 'server/data/user.json',
-  GroupFile: 'server/data/group.json'
+  GroupFile: 'server/data/group.json',
+  ChannelFile: 'server/data/channel.json',
 }
 
 const uniqueFields = {
@@ -38,10 +39,19 @@ app.use(express.json())
 require('./socket.js')(app, io)
 
 //
-// ─── USER ROUTES ────────────────────────────────────────────────────────────────
+// ─── FILE READERS AND WRITERS ───────────────────────────────────────────────────
+//
 const readUserFile = ReadJSON.bind(null, dataFiles.UserFile)
 const writeUserFile = WriteJSON.bind(null, dataFiles.UserFile)
 
+const readGroupFile = ReadJSON.bind(null, dataFiles.GroupFile)
+const writeGroupFile = WriteJSON.bind(null, dataFiles.GroupFile)
+
+const readChannelFile = ReadJSON.bind(null, dataFiles.ChannelFile)
+const writeChannelFile = WriteJSON.bind(null, dataFiles.ChannelFile)
+
+//
+// ─── USER ROUTES ────────────────────────────────────────────────────────────────
 // Logging in
 app.get('/login/:username', async (req, res) => {
   console.info('Attempting Log In')
@@ -52,10 +62,10 @@ app.get('/login/:username', async (req, res) => {
     username: req.params.username
   })
 
-  if (user.length == 0) {
-    res.send(undefined)
+  if (user) {
+    res.send(user.shift())
   } else {
-    res.send(user[0])
+    res.send(undefined)
   }
 })
 
@@ -78,7 +88,7 @@ app.get('/user/:id', async (req, res) => {
   }
   const user = await selectUser(selector)
 
-  res.json(user[0])
+  res.json(user.shift())
 })
 
 // Create
@@ -154,8 +164,7 @@ app.delete('/user/:id', async (req, res) => {
 //
 // ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
 //
-const readGroupFile = ReadJSON.bind(null, dataFiles.GroupFile)
-const writeGroupFile = WriteJSON.bind(null, dataFiles.GroupFile)
+
 
 // Get Groups
 app.get('/group', async (req, res) => {
@@ -169,11 +178,31 @@ app.get('/group', async (req, res) => {
 app.get('/group/:id', async (req, res) => {
   // PA
   const findGroup = findItems.bind(null, readGroupFile)
+  const findUsers = findItems.bind(null, readUserFile)
 
-  const group = await findGroup({
+  let group = await findGroup({
     id: req.params.id
   })
-  res.json(group[0])
+
+  if (group) {
+    group = group.shift()
+  } else {
+    res.send('not-found')
+    return
+  }
+
+  // Add nested user objects
+  if (group.users) {
+    group.users = await Promise.all(group.users.map(async (id) => {
+      let user = await findUsers({id: id})
+      return user.shift()
+    }))
+  } else {
+    group.users = []
+  }
+
+  // Find Associated Channels TODO:
+  res.json(group)
 })
 
 // Create Group
@@ -199,7 +228,7 @@ app.post('/group', async (req, res) => {
   res.send(group.id)
 })
 
-// Update
+// Update Group
 app.patch('/group/:id', async (req, res) => {
   console.log('Updating Group')
   const changes = req.body
@@ -209,7 +238,6 @@ app.patch('/group/:id', async (req, res) => {
 
   // Partial Application
   const updateGroup = updateItems.bind(null, readGroupFile, writeGroupFile, selector)
-
   await updateGroup(changes)
   res.send("OK")
 })

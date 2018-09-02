@@ -1,3 +1,30 @@
-<p>
-  group works! {{group.id}} {{ group.description }}
-</p>
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">{{group.name}} | <span>{{group.description}}</span></div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-8">
+          <h4 class="card-title">Channels</h4>
+        </div>
+        <div class="col-md-4">
+
+          <h4 class="card-title">Users</h4>
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let user of group.users">
+              <div class="row">
+                <div class="col-md">
+                  <p class="lead">{{user.username}}</p>
+                </div>
+                <!-- TODO: Lock this to admins -->
+                <div class="col-md">
+                  <button class="btn btn-outline-info" (click)="removeUser(user.id)">Remove User</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

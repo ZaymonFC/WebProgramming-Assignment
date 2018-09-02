@@ -19,5 +19,7 @@ export function sanitiseGroupObject(group) {
   return {
     name: group.name,
     description: group.description,
+    users: [],
+    channels: [],
   }
 }
