@@ -4,9 +4,12 @@ import {
   findItems,
   insertItems,
   updateItems,
-  deleteItems
+  deleteItems,
+  insertForeignKey,
+  removeForeignKey,
+  removeReference
 } from './data-access/repository'
-import { sanitiseUserObject, sanitiseGroupObject } from './sanitizers';
+import { sanitiseUserObject, sanitiseGroupObject, sanitiseChannelObject } from './sanitizers';
 
 const uuid = require('uuid/v4')
 const path = require('path')
@@ -21,7 +24,8 @@ const dataFiles = {
 
 const uniqueFields = {
   User: ['id', 'username'],
-  Group: ['id', 'name']
+  Group: ['id', 'name'],
+  Channel: ['name']
 }
 
 let http = require('http')
@@ -41,14 +45,14 @@ require('./socket.js')(app, io)
 //
 // ─── FILE READERS AND WRITERS ───────────────────────────────────────────────────
 //
-const readUserFile = ReadJSON.bind(null, dataFiles.UserFile)
-const writeUserFile = WriteJSON.bind(null, dataFiles.UserFile)
+const readUser = ReadJSON.bind(null, dataFiles.UserFile)
+const writeUser = WriteJSON.bind(null, dataFiles.UserFile)
 
-const readGroupFile = ReadJSON.bind(null, dataFiles.GroupFile)
-const writeGroupFile = WriteJSON.bind(null, dataFiles.GroupFile)
+const readGroup = ReadJSON.bind(null, dataFiles.GroupFile)
+const writeGroup = WriteJSON.bind(null, dataFiles.GroupFile)
 
-const readChannelFile = ReadJSON.bind(null, dataFiles.ChannelFile)
-const writeChannelFile = WriteJSON.bind(null, dataFiles.ChannelFile)
+const readChannel = ReadJSON.bind(null, dataFiles.ChannelFile)
+const writeChannel = WriteJSON.bind(null, dataFiles.ChannelFile)
 
 //
 // ─── USER ROUTES ────────────────────────────────────────────────────────────────
@@ -57,7 +61,7 @@ app.get('/login/:username', async (req, res) => {
   console.info('Attempting Log In')
   
   // PA
-  const findUser = findItems.bind(null, readUserFile)
+  const findUser = findItems.bind(null, readUser)
   const user = await findUser({
     username: req.params.username
   })
@@ -72,7 +76,7 @@ app.get('/login/:username', async (req, res) => {
 // List
 app.get('/user', async (req, res) => {
   console.info('Requested top users')
-  const selectNUsers = selectN.bind(null, readUserFile)
+  const selectNUsers = selectN.bind(null, readUser)
 
   const users = await selectNUsers(100)
   res.json(users)
@@ -82,7 +86,7 @@ app.get('/user', async (req, res) => {
 app.get('/user/:id', async (req, res) => {
   console.info('Requested user: ', req.params.id)
 
-  const selectUser = findItems.bind(null, readUserFile)
+  const selectUser = findItems.bind(null, readUser)
   const selector = {
     id: req.params.id
   }
@@ -102,7 +106,7 @@ app.post('/user', async (req, res) => {
   user.id = uuid()
   
   // Partial Application
-  const insertUser = insertItems.bind(null, readUserFile, writeUserFile, uniqueFields.User)
+  const insertUser = insertItems.bind(null, readUser, writeUser, uniqueFields.User)
 
   try {
     await insertUser(user)
@@ -124,7 +128,7 @@ app.patch('/user/:id', async (req, res) => {
   }
 
   // Partial Application
-  const updateUser = updateItems.bind(null, readUserFile, writeUserFile, selector)
+  const updateUser = updateItems.bind(null, readUser, writeUser, selector)
 
   await updateUser(changes)
   res.send("OK")
@@ -141,7 +145,7 @@ app.patch('/user/:id', async (req, res) => {
   }
 
   // Partial Application
-  const updateUser = updateItems.bind(null, readUserFile, writeUserFile, selector)
+  const updateUser = updateItems.bind(null, readUser, writeUser, selector)
 
   await updateUser(changes)
   res.send("OK")
@@ -152,7 +156,7 @@ app.delete('/user/:id', async (req, res) => {
   console.log('Deleting user')
 
   // Partial Application
-  const deleteUser = deleteItems.bind(null, readUserFile, writeUserFile)
+  const deleteUser = deleteItems.bind(null, readUser, writeUser)
 
   await deleteUser({
     id: req.params.id
@@ -169,7 +173,7 @@ app.delete('/user/:id', async (req, res) => {
 // Get Groups
 app.get('/group', async (req, res) => {
   // Partial Application
-  const selectNGroups = selectN.bind(null, readGroupFile)
+  const selectNGroups = selectN.bind(null, readGroup)
 
   const groups = await selectNGroups(100)
   res.send(groups)
@@ -177,8 +181,9 @@ app.get('/group', async (req, res) => {
 
 app.get('/group/:id', async (req, res) => {
   // PA
-  const findGroup = findItems.bind(null, readGroupFile)
-  const findUsers = findItems.bind(null, readUserFile)
+  const findGroup = findItems.bind(null, readGroup)
+  const findUsers = findItems.bind(null, readUser)
+  const findChannels = findItems.bind(null, readChannel)
 
   let group = await findGroup({
     id: req.params.id
@@ -197,11 +202,16 @@ app.get('/group/:id', async (req, res) => {
       let user = await findUsers({id: id})
       return user.shift()
     }))
-  } else {
-    group.users = []
   }
 
-  // Find Associated Channels TODO:
+  // Find Associated Channels
+  if(group.channels) {
+    group.channels = await Promise.all(group.channels.map(async (id) => {
+      let channel = await findChannels({id: id})
+      return channel
+    }))
+  }
+
   res.json(group)
 })
 
@@ -214,8 +224,7 @@ app.post('/group', async (req, res) => {
   }
   group.id = uuid()
 
-  const uniqueFields = ['id', 'name']
-  const insertGroup = insertItems.bind(null, readGroupFile, writeGroupFile, uniqueFields)
+  const insertGroup = insertItems.bind(null, readGroup, writeGroup, uniqueFields.Group)
 
   try {
     await insertGroup(group)
@@ -237,7 +246,7 @@ app.patch('/group/:id', async (req, res) => {
   }
 
   // Partial Application
-  const updateGroup = updateItems.bind(null, readGroupFile, writeGroupFile, selector)
+  const updateGroup = updateItems.bind(null, readGroup, writeGroup, selector)
   await updateGroup(changes)
   res.send("OK")
 })
@@ -247,7 +256,7 @@ app.delete('/group/:id', async (req, res) => {
   console.log('Deleting Group')
 
   // Partial Application
-  const deleteGroup = deleteItems.bind(null, readGroupFile, writeGroupFile)
+  const deleteGroup = deleteItems.bind(null, readGroup, writeGroup)
 
   await deleteGroup({
     id: req.params.id
@@ -255,6 +264,62 @@ app.delete('/group/:id', async (req, res) => {
 
   res.send("OK")
 })
+
+
+// Create Channel
+app.put('/channel', async (req, res) => {
+  const channel = sanitiseChannelObject(req.body)
+  const groupId = req.body.groupId
+
+  console.log(req.body)
+
+  if (channel == null) {
+    res.send('failed')
+    console.log('[Channel] Sanitize Failed')
+    return
+  }
+  channel.id = uuid()
+
+  // PA
+  const insertChannel = insertItems.bind(null, readChannel, writeChannel, uniqueFields.Channel)
+  try {
+    await insertChannel(channel)
+  } catch (error) {
+    if (error.message === 'not-unique') { 
+      res.send('not-unique')
+    }
+    return
+  }
+
+  // Update the referenced group to contain a reference to the channel
+  const selector = { id: groupId }
+  const insertFKToGroup = insertForeignKey.bind(null, readGroup, writeGroup, selector)
+
+  await insertFKToGroup({
+    key: 'channels',
+    value: channel.id
+  })
+
+  console.log('Created Channel')
+  res.json(channel)
+})
+
+// Delete Channel and All References To It
+app.delete('/channel/:id', async (req, res) => {
+  // Remove the channel entity
+  const deleteChannel = deleteItems.bind(null, readChannel, writeChannel)
+  await deleteChannel({
+    id: req.params.id
+  })
+
+  // Clear the associated foreign keys from all groups
+  const removeGroupChannelKey = removeReference(null, readChannel, writeChannel)
+  await removeGroupChannelKey({
+    key: 'channel',
+    value: req.params.id
+  })
+})
+
 
 //
 // ─── SERVER START ───────────────────────────────────────────────────────────────

@@ -23,3 +23,13 @@ export function sanitiseGroupObject(group) {
     channels: [],
   }
 }
+
+export function sanitiseChannelObject(channel) {
+  if (!channel.name) {
+    return null
+  }
+  return {
+    name: channel.name,
+    users: []
+  }
+}

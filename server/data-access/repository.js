@@ -73,6 +73,13 @@ export async function removeForeignKey(ReadJSON, WriteJSON, selector, foreignKey
   return await WriteJSON(transformedItems)
 }
 
+export async function removeReference(ReadJSON, WriteJSON, foreignKey) {
+  const items = ReadJSON()
+  const transformedItems = items.map(element => removeForeignKeyFromElement(element, foreignKey))
+
+  return await WriteJSON(transformedItems)
+}
+
 function selectItem(object, selector) {
   return Object.entries(selector).every(([key, value]) => {
     return object[key] && object[key] == value
