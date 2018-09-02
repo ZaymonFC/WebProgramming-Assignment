@@ -87,6 +87,11 @@ export async function removeReference(ReadJSON, WriteJSON, foreignKey) {
   return await WriteJSON(transformedItems)
 }
 
+export async function findNotAssociated(ReadJSON, foreignKey) {
+  const items = await ReadJSON
+  return items.filter(element => !referenced(element, foreignKey))
+}
+
 function selectItem(object, selector) {
   return Object.entries(selector).every(([key, value]) => {
     return object[key] && object[key] == value
@@ -111,4 +116,8 @@ function insertForeignKeyToElement(element, foreignKey) {
 function removeForeignKeyFromElement(element, foreignKey) {
   element[foreignKey.key] = element[foreignKey.key].filter(e => e !== foreignKey.value)
   return element
+}
+
+function referenced(element, fk) {
+  return element[fk.key] && element[fk.key].includes(fk.value)
 }

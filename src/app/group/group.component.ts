@@ -14,6 +14,7 @@ import { Channel } from '../types/channel';
 })
 export class GroupComponent implements OnInit {
   private group: Group
+  private otherUsers: User[]
 
   // Form fields
   private form_createChannel: string
@@ -29,7 +30,12 @@ export class GroupComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id')
 
     this.service.getGroup(id)
-      .subscribe((data: Group) => this.group = data)
+      .subscribe((data: Group) => {
+        this.group = data
+        this.service.getOtherUsers(this.group.id)
+          .subscribe((userData: User[]) => this.otherUsers = userData)
+      })
+
   }
 
   createChannel(event: Event) {
@@ -47,6 +53,29 @@ export class GroupComponent implements OnInit {
     this.group.channels = this.group.channels.filter(channel => {
       return channel.id !== channelId
     })
-
   }
+
+  addUser(id) {
+    console.log('Adding user to group with id: ', id)
+    this.service.addUser(id, this.group.id)
+      .subscribe((data: any) => {
+        const items = this.otherUsers.filter(element => element.id === id)
+        const user: User = items.shift()
+        this.group.users.push(user)
+        this.otherUsers = this.otherUsers.filter(element => element.id !== id)
+      })
+  }
+
+  removeUser(id) {
+    console.log('Removing user from group with id: ', id)
+    this.service.removeUser(id, this.group.id)
+      .subscribe((data: any) => {
+        console.log(data)
+        const items = this.group.users.filter(e => e.id === id)
+        const user: User = items.shift()
+        this.otherUsers.push(user)
+        this.group.users = this.group.users.filter(element => element.id !== id)
+      })
+  }
+
 }

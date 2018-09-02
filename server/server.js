@@ -151,11 +151,29 @@ app.delete('/user/:id', async (req, res) => {
   res.send({ status: "OK" })
 })
 
+app.get('/otherUsers/:id', async (req, res) => {
+  console.log('Fetching users that aren\'t in group: ' + req.params.id)
+
+  // Fetch the group
+  const findGroups = findItems.bind(null, readGroup)
+  const items = await findGroups({ id: req.params.id })
+  if (!items) {
+    res.send({status: FAILED})
+    return
+  }
+  const group = items.shift()
+  
+  const selectUsers = selectN.bind(null, readUser)
+  let users = await selectUsers(100)
+  if (group.users) {
+    users = users.filter(user => !group.users.includes(user.id))
+  }
+
+  res.send(users)
+})
+
 //
 // ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
-//
-
-
 // Get Groups
 app.get('/group', async (req, res) => {
   // Partial Application
@@ -319,6 +337,33 @@ app.delete('/channel/:id', async (req, res) => {
   })
 
   res.send({status: 'OK'})
+})
+
+// Add or remove user from group
+app.patch('/group/:id/user', async (req, res) => {
+  console.log(req.body.method + ' user to group' + req.params.id)
+  const userId = req.body.id
+
+  if (req.body.method === 'add-user') {
+    const addGroupFK = insertForeignKey.bind(null, readGroup, writeGroup, { id: req.params.id })
+    await addGroupFK({
+      key: 'users',
+      value: userId
+    })
+    res.send({status: "OK"})
+    return
+  } else if (req.body.method === 'remove-user') {
+    const removeGroupFK = removeForeignKey.bind(null, readGroup, writeGroup, { id: req.params.id })
+    await removeGroupFK({
+      key: 'users',
+      value: userId
+    })
+    res.send({status: "OK"})
+    return
+  }
+
+  res.send("FAIL")
+  return
 })
 
 

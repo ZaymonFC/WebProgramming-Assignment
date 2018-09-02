@@ -46,11 +46,9 @@
             <li class="list-group-item" *ngFor="let user of group.users">
               <div class="row">
                 <div class="col-md">
+                  <!-- TODO: Guard this -->
                   <p class="lead">{{user.username}}</p>
-                </div>
-                <!-- TODO: Lock this to admins -->
-                <div class="col-md">
-                  <button class="btn btn-outline-info" (click)="removeUser(user.id)">Remove User</button>
+                  <button class="btn btn-outline-danger" (click)="removeUser(user.id)">Remove User From Group</button>
                 </div>
               </div>
             </li>
@@ -58,6 +56,20 @@
 
         </div>
       </div>
+    </div>
+  </div>
+
+  <br>
+  <!-- TODO: Guard this -->
+  <div class="card">
+    <div class="card-header">Manage Users</div>
+    <div class="card body">
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let user of otherUsers">
+            {{user.username}}
+            <button class="btn btn-outline-info" (click)="addUser(user.id)">Add To Group</button>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
