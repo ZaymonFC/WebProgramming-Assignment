@@ -32,7 +32,6 @@ export class PermissionService {
   hasPermission(permissionName: string): boolean {
     const userRank = this.userService.getUser().rank
     const userPermissions = this.generatePermissions(userRank)
-
     return userPermissions.some(element => element === permissionName)
   }
 

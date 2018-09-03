@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: '404', component: NotFoundComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'group/:id', component: GroupComponent },
-  { path: 'channel/:id', component: ChannelComponent}
+  { path: 'channel/:id', component: ChannelComponent},
   { path: '**', redirectTo: '404'},
 ]
 

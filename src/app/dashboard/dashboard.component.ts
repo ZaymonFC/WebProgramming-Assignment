@@ -5,13 +5,14 @@ import { Router } from '@angular/router'
 import { GroupService } from '../group/group.service'
 import { User } from 'src/app/types/user'
 import { PermissionService } from '../services/permission.service';
+import { GroupSummary } from '../types/group-summary';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  private groups: Group[]
+  private groups: GroupSummary[]
   private users: User[]
 
   private form_groupName = ''
@@ -34,20 +35,30 @@ export class DashboardComponent implements OnInit {
       return
     }
 
-    this.groupService
-      .getGroups()
-      .subscribe((data: Group[]) => (this.groups = data))
+    this.groupService.getGroups()
+      .subscribe((data: any) => {
+        this.groups = data
+        if (this.userService.getUser().rank === 'user') {
+          if (this.groups) {
+            this.groups = this.groups.filter(group => (
+              group.users.some(user => user === this.userService.getUser().id)
+            ))
+          }
+        }
+      })
 
     this.userService
       .getUsers()
-      .subscribe((data: User[]) => (this.users = data))
+      .subscribe((data: User[]) => {
+        this.users = data
+      })
   }
 
   createGroup(event: Event) {
     event.preventDefault()
     console.log('Creating Group: ', this.form_groupName, this.form_groupDescription)
     this.groupService.createGroup(this.form_groupName, this.form_groupDescription)
-      .subscribe((data: Group) => {
+      .subscribe((data: GroupSummary) => {
         this.groups.push(data)
         this.form_groupDescription = ''
         this.form_groupName = ''

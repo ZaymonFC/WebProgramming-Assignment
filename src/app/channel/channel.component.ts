@@ -35,7 +35,7 @@ export class ChannelComponent implements OnInit {
           .subscribe((groupData: Group) => {
             this.group = groupData
             this.otherUsers = this.group.users.filter(groupUser => {
-              return !this.channel.users.some(user => groupUser.id === user.id)
+              return this.channel.users.some(user => groupUser.id === user.id)
             })
           })
       })

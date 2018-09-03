@@ -3,6 +3,7 @@ import { User } from '../types/user';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,7 @@ export class UserService {
   getUser(): User {
     return this.user
   }
+
 
   getUsers() {
     return this.http.get(environment.API_URL + '/user')

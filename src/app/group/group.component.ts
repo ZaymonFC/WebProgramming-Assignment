@@ -7,6 +7,7 @@ import { User } from 'src/app/types/user'
 import { ChannelService } from 'src/app/channel/channel.service'
 import { Channel } from '../types/channel'
 import { PermissionService } from '../services/permission.service';
+import { ChannelSummary } from 'src/app/types/channel-summary';
 
 @Component({
   selector: 'app-group',
@@ -26,6 +27,7 @@ export class GroupComponent implements OnInit {
     private groupService: GroupService,
     private channelService: ChannelService,
     private permissions: PermissionService,
+    private userService: UserService,
   ) { }
 
   ngOnInit() {
@@ -34,6 +36,17 @@ export class GroupComponent implements OnInit {
     this.groupService.getGroup(id)
       .subscribe((data: Group) => {
         this.group = data
+
+        // Filter Channels If User
+        if (this.userService.getUser().rank === 'user') {
+          console.log(this.group.channels, this.userService.getUser().id)
+          if (this.group.channels) {
+            this.group.channels = this.group.channels.filter(channel => (
+              channel.users.some(user => user === this.userService.getUser().id)
+            ))
+          }
+        }
+
         this.groupService.getOtherUsers(this.group.id)
           .subscribe((userData: User[]) => this.otherUsers = userData)
       })
@@ -43,7 +56,7 @@ export class GroupComponent implements OnInit {
   createChannel(event: Event) {
     event.preventDefault()
     this.channelService.createChannel(this.form_createChannel, this.group.id)
-      .subscribe((data: Channel) => this.group.channels.push(data))
+      .subscribe((data: ChannelSummary) => this.group.channels.push(data))
     this.form_createChannel = ''
   }
 
