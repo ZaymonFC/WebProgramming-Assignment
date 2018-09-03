@@ -275,7 +275,19 @@ The responsibilities of the angular client are to present data to the user and t
         \end{itemize}
 \end{itemize}
 
+\newpage
 \section{Angular}
+\subsection{Routes}
+\begin{itemize}
+    \item \textbf{`'}, redirects to component HomeComponent
+    \item \textbf{`chat'}, redirects to component ChatComponent
+    \item \textbf{`404'}, redirects to component NotFoundComponent
+    \item \textbf{`dashboard'}, redirects to component DashboardComponent
+    \item \textbf{`group/:id'}, redirects to component GroupComponent with a group ID as input
+    \item \textbf{`channel/:id'}, redirects to component ChannelComponent with a channel ID as input
+    \item \textbf{`**'}, redirectTo component '404' (not found)
+\end{itemize}
+
 \subsection{Components}
 \par Various components were created throughout development, some components form hierarchies of parent and child components. The app component is the top level component in the application. The app component in this application contains a simple template which include a router outlet and the menu bar. When the application navigates to other routes the router outlet will be populated with different components.
 
