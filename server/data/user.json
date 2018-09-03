@@ -1,1 +1,1 @@
-[{"username":"s","rank":"super-admin","email":"example@example.com","id":"7c1108c5-b38d-4a39-ab40-c1d8f0bfa1b6"},{"username":"User","rank":"user","email":"email","id":"d496720b-e70f-4fd4-887a-23ba21a0b49b"}]
+[{"username":"s","rank":"super-admin","email":"example@example.com","id":"7c1108c5-b38d-4a39-ab40-c1d8f0bfa1b6"},{"username":"User","rank":"group-admin","email":"email","id":"d496720b-e70f-4fd4-887a-23ba21a0b49b"}]

@@ -22,7 +22,7 @@ export class ChannelComponent implements OnInit {
     private service: ChannelService,
     private groupService: GroupService,
     private router: Router,
-    private permission: PermissionService,
+    private permissions: PermissionService,
   ) { }
 
   ngOnInit() {
