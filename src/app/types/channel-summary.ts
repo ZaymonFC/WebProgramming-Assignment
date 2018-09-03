@@ -1,5 +1,5 @@
 export interface ChannelSummary {
   id: string
-  group: string
+  groupId: string
   users: string[]
 }

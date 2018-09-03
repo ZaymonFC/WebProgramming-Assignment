@@ -292,7 +292,7 @@ app.delete('/group/:id', async (req, res) => {
   const deleteChannels = deleteCollection.bind(null, readChannel, writeChannel)
   console.log('Channels', group.channels)
   if (group.channels) {
-    deleteChannels(group.channels)
+    await deleteChannels(group.channels)
   }
 
   res.send({status: "OK"})
@@ -375,9 +375,8 @@ app.patch('/group/:id/user', async (req, res) => {
       key: 'users',
       value: userId
     })
+
     // Remove ref to user from all the groups channels
-
-
     res.send({status: "OK"})
     return
   }
