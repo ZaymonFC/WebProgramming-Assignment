@@ -56,6 +56,10 @@
 
         </div>
       </div>
+      <div class="row">
+          <div class="col-12">
+            <button class="btn btn-outline-info" (click)="backToGroup(group.id)">Back To {{group.name}}</button>
+          </div>
     </div>
   </div>
 
@@ -63,7 +67,8 @@
   <!-- TODO: Guard this -->
   <div class="card">
     <div class="card-header">Manage Users</div>
-    <div class="card body">
+    <div class="card-body">
+      <h6 *ngIf="otherUsers.length === 0" class="card-subtitle">No more users to add to {{group.name}}</h6>
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let user of otherUsers">
             {{user.username}}

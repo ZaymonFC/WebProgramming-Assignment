@@ -3,3 +3,7 @@
     overflow-y:auto;
     -webkit-overflow-scrolling: touch;
 }
+
+.card-body {
+  min-height: 300px
+}

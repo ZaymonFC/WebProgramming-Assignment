@@ -4,8 +4,8 @@ import { Group } from 'src/app/types/group'
 import { GroupService } from './group.service'
 import { UserService } from '../services/user.service'
 import { User } from 'src/app/types/user'
-import { ChannelService } from 'src/app/channel/channel.service';
-import { Channel } from '../types/channel';
+import { ChannelService } from 'src/app/channel/channel.service'
+import { Channel } from '../types/channel'
 
 @Component({
   selector: 'app-group',
@@ -76,6 +76,14 @@ export class GroupComponent implements OnInit {
         this.otherUsers.push(user)
         this.group.users = this.group.users.filter(element => element.id !== id)
       })
+  }
+
+  enterChannel(channelId) {
+    this.router.navigate(['/channel', channelId])
+  }
+
+  backToDashBoard() {
+    this.router.navigate(['/dashboard'])
   }
 
 }

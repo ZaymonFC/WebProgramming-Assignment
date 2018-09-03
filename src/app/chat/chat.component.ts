@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Router } from '@angular/router'
 import { SocketService } from '../services/socket.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../services/user.service'
+import { Channel } from 'src/app/types/channel';
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -13,6 +14,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private messages
   private message
   private connection: Subscription
+  @Input() private channel: Channel
 
   constructor(
     private router: Router,

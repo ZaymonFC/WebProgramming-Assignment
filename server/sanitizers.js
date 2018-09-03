@@ -25,11 +25,12 @@ export function sanitiseGroupObject(group) {
 }
 
 export function sanitiseChannelObject(channel) {
-  if (!channel.name) {
+  if (!channel.name || !channel.groupId) {
     return null
   }
   return {
     name: channel.name,
+    groupId: channel.groupId,
     users: []
   }
 }

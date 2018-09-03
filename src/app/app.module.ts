@@ -18,7 +18,7 @@ import { GroupComponent } from './group/group.component'
 import { RouterModule, Routes } from '@angular/router'
 import { DashboardUserComponent } from './dashboard/dashboard-user/dashboard-user.component'
 import { CounterComponent } from './presentation/counter/counter.component';
-import { ChannelComponent } from './channel/channel/channel.component'
+import { ChannelComponent } from './channel/channel.component'
 
 @NgModule({
   declarations: [

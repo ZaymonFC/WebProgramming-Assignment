@@ -61,7 +61,6 @@ const writeChannel = WriteJSON.bind(null, dataFiles.ChannelFile)
 app.get('/login/:username', async (req, res) => {
   console.info('Attempting Log In')
   
-  // PA
   const findUser = findItems.bind(null, readUser)
   const user = await findUser({
     username: req.params.username
@@ -106,7 +105,6 @@ app.post('/user', async (req, res) => {
   }
   user.id = uuid()
   
-  // Partial Application
   const insertUser = insertItems.bind(null, readUser, writeUser, uniqueFields.User)
 
   try {
@@ -128,7 +126,6 @@ app.patch('/user/:id', async (req, res) => {
     id: req.params.id
   }
 
-  // Partial Application
   const updateUser = updateItems.bind(null, readUser, writeUser, selector)
 
   await updateUser(changes)
@@ -141,12 +138,26 @@ const entities = ['User', 'Group']
 app.delete('/user/:id', async (req, res) => {
   console.log('Deleting user')
 
-  // Partial Application
+  const id = req.params.id
+  if (!id) {
+    res.sendStatus(400)
+    return
+  }
+
   const deleteUser = deleteItems.bind(null, readUser, writeUser)
 
   await deleteUser({
     id: req.params.id
   })
+
+  // Remove all references to the user from groups
+  const removeUserReferenceGroups = removeReference.bind(null, readGroup, writeGroup)
+  await removeUserReferenceGroups({
+    id: 
+  })
+  
+  // Remove all regerences to the user from channels
+  const removeUserReferenceChannels = removeReference.bind(null, readChannel, writeChannel)
 
   res.send({ status: "OK" })
 })
@@ -176,7 +187,6 @@ app.get('/otherUsers/:id', async (req, res) => {
 // ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
 // Get Groups
 app.get('/group', async (req, res) => {
-  // Partial Application
   const selectNGroups = selectN.bind(null, readGroup)
 
   const groups = await selectNGroups(100)
@@ -184,7 +194,6 @@ app.get('/group', async (req, res) => {
 })
 
 app.get('/group/:id', async (req, res) => {
-  // PA
   const findGroup = findItems.bind(null, readGroup)
   const findUsers = findItems.bind(null, readUser)
   const findChannels = findItems.bind(null, readChannel)
@@ -247,7 +256,6 @@ app.patch('/group/:id', async (req, res) => {
     id: req.params.id
   }
 
-  // Partial Application
   const updateGroup = updateItems.bind(null, readGroup, writeGroup, selector)
   await updateGroup(changes)
   res.send("OK")
@@ -262,7 +270,7 @@ app.delete('/group/:id', async (req, res) => {
   const items = await findGroup({ id: req.params.id })
   const group = items.shift()
   console.log(group)
-  // Partial Application
+
   const deleteGroup = deleteItems.bind(null, readGroup, writeGroup)
 
   await deleteGroup({
@@ -294,7 +302,6 @@ app.put('/channel', async (req, res) => {
   }
   channel.id = uuid()
 
-  // PA
   const insertChannel = insertItems.bind(null, readChannel, writeChannel, uniqueFields.Channel)
   try {
     await insertChannel(channel)
@@ -364,11 +371,67 @@ app.patch('/group/:id/user', async (req, res) => {
   return
 })
 
+app.get('/channel/:id', async (req, res) => {
+  const channelId = req.params.id
+  const findChannels = findItems.bind(null, readChannel)
+
+  const items = await findChannels({ id: channelId })
+  if (!items) {
+    res.sendStatus(404)
+    return
+  }
+  const channel = items.shift()
+
+  // Populate users from channel
+  if (channel.users) {
+    const findUsers = findItems.bind(null, readUser)
+    channel.users = await Promise.all(channel.users.map(async (userId) => {
+      const items = await findUsers({ id: userId })
+      return items.shift()
+    }))
+  }
+
+  res.send(channel)
+})
+
+// Add or remove users from a channel
+app.patch('/channel', async (req, res) => {
+  const channelId = req.body.channelId
+  const userId = req.body.userId
+  const method = req.body.method
+
+  if (!channelId || !userId || !method) {
+    res.sendStatus(400)
+    return
+  }
+  
+  if (method === 'add-user') {
+    const addChannelFK = insertForeignKey.bind(null, readChannel, writeChannel, { id: channelId })
+    await addChannelFK({
+      key: 'users',
+      value: userId
+    })
+
+    res.send({status: "OK"})
+    return
+  } else if (method === 'remove-user') {
+    const removeChannelFK = removeForeignKey.bind(null, readChannel, writeChannel, { id: channelId })
+    await removeChannelFK({
+      key: 'users',
+      value: userId
+    })
+
+    res.send({status: "OK"})
+    return
+  } else {
+    res.sendStatus(400)
+    return
+  }
+})
+
 
 //
 // ─── SERVER START ───────────────────────────────────────────────────────────────
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
-
-
