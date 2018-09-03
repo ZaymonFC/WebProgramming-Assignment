@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service'
 import { User } from 'src/app/types/user'
 import { ChannelService } from 'src/app/channel/channel.service'
 import { Channel } from '../types/channel'
+import { PermissionService } from '../services/permission.service';
 
 @Component({
   selector: 'app-group',
@@ -22,17 +23,18 @@ export class GroupComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: GroupService,
+    private groupService: GroupService,
     private channelService: ChannelService,
+    private permissions: PermissionService,
   ) { }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')
 
-    this.service.getGroup(id)
+    this.groupService.getGroup(id)
       .subscribe((data: Group) => {
         this.group = data
-        this.service.getOtherUsers(this.group.id)
+        this.groupService.getOtherUsers(this.group.id)
           .subscribe((userData: User[]) => this.otherUsers = userData)
       })
 
@@ -57,7 +59,7 @@ export class GroupComponent implements OnInit {
 
   addUser(id) {
     console.log('Adding user to group with id: ', id)
-    this.service.addUser(id, this.group.id)
+    this.groupService.addUser(id, this.group.id)
       .subscribe((data: any) => {
         const items = this.otherUsers.filter(element => element.id === id)
         const user: User = items.shift()
@@ -68,7 +70,7 @@ export class GroupComponent implements OnInit {
 
   removeUser(id) {
     console.log('Removing user from group with id: ', id)
-    this.service.removeUser(id, this.group.id)
+    this.groupService.removeUser(id, this.group.id)
       .subscribe((data: any) => {
         console.log(data)
         const items = this.group.users.filter(e => e.id === id)
@@ -82,7 +84,7 @@ export class GroupComponent implements OnInit {
     this.router.navigate(['/channel', channelId])
   }
 
-  backToDashBoard() {
+  backToDashboard() {
     this.router.navigate(['/dashboard'])
   }
 

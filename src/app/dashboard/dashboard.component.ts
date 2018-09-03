@@ -4,6 +4,7 @@ import { UserService } from '../services/user.service'
 import { Router } from '@angular/router'
 import { GroupService } from '../group/group.service'
 import { User } from 'src/app/types/user'
+import { PermissionService } from '../services/permission.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -22,7 +23,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private userService: UserService,
     private router: Router,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private permissions: PermissionService,
   ) {}
 
   ngOnInit() {
@@ -61,6 +63,7 @@ export class DashboardComponent implements OnInit {
   createUser(event: Event) {
     event.preventDefault()
     console.log('Creating User: ', this.form_username, this.form_email)
+    if (!this.form_email || !this.form_username) { return }
 
     this.userService.createUser(this.form_username, this.form_email)
       .subscribe((data: User) => {

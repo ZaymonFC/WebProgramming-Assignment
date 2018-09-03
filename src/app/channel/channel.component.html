@@ -5,9 +5,11 @@
     <h4>Users:</h4>
     <p class="lead" *ngIf="channel.users.length === 0">No Users In Channel</p>
     <li class="list-group-item" *ngFor="let user of channel.users">
-      <!-- TODO: Guard this -->
+
       <p class="lead">{{user.username}}</p>
-      <button class="btn btn-outline-danger" (click)="removeUser(user.id)">Remove User From Channel</button>
+      <div *ngIf="permissions.hasPermission('channel>manageUsers')">
+        <button class="btn btn-outline-danger" (click)="removeUser(user.id)">Remove User From Channel</button>
+      </div>
     </li>
     <br>
   </div>
@@ -23,16 +25,17 @@
 
 
 <br>
-<!-- TODO: Guard this -->
-<div class="card">
-  <div class="card-header">Manage Users</div>
-  <div class="card-body">
-    <h6 class="card-subtitle" *ngIf="this.otherUsers.length === 0">All users in {{group.name}} are in this channel</h6>
-    <ul class="list-group">
-      <li class="list-group-item" *ngFor="let user of otherUsers">
-        {{user.username}}
-        <button class="btn btn-outline-info" (click)="addUser(user.id)">Add To Channel</button>
-      </li>
-    </ul>
+<div *ngIf="permissions.hasPermission('channel>manageUsers')">
+  <div class="card">
+    <div class="card-header">Manage Users</div>
+    <div class="card-body">
+      <h6 class="card-subtitle" *ngIf="this.otherUsers.length === 0">All users in {{group.name}} are in this channel</h6>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let user of otherUsers">
+          {{user.username}}
+          <button class="btn btn-outline-info" (click)="addUser(user.id)">Add To Channel</button>
+        </li>
+      </ul>
+    </div>
   </div>
 </div>

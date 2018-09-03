@@ -5,6 +5,7 @@ import { Group } from 'src/app/types/group'
 import { Channel } from 'src/app/types/channel'
 import { GroupService } from '../group/group.service';
 import { User } from 'src/app/types/user';
+import { PermissionService } from '../services/permission.service';
 
 @Component({
   selector: 'app-channel',
@@ -21,6 +22,7 @@ export class ChannelComponent implements OnInit {
     private service: ChannelService,
     private groupService: GroupService,
     private router: Router,
+    private permission: PermissionService,
   ) { }
 
   ngOnInit() {

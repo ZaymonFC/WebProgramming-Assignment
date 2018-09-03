@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { User } from 'src/app/types/user'
 import { Router } from '@angular/router'
 import { UserService } from '../../services/user.service';
+import { PermissionService } from '../../services/permission.service';
 
 @Component({
   selector: 'app-dashboard-user',
@@ -18,6 +19,7 @@ export class DashboardUserComponent implements OnInit {
   constructor(
     private router: Router,
     private service: UserService,
+    private permissions: PermissionService
   ) {
     this.collapseClass = 'hide'
     this.collapsed = true
@@ -41,5 +43,29 @@ export class DashboardUserComponent implements OnInit {
       .subscribe(data => console.log(data))
 
     this.emitter.emit(this.user.id)
+  }
+
+  promoteGroupAdmin() {
+    this.changeRank(this.user.id, 'group-admin')
+  }
+
+  promoteSuperAdmin() {
+    this.changeRank(this.user.id, 'super-admin')
+  }
+
+  demoteGroupAdmin() {
+    this.changeRank(this.user.id, 'user')
+  }
+
+  demoteSuperAdmin() {
+    this.changeRank(this.user.id, 'group-admin')
+  }
+
+  private changeRank(id: string, rank: string) {
+    this.service.changeRank(id, rank)
+      .subscribe((data: any) => {
+        console.log(data)
+        this.user.rank = rank
+      })
   }
 }

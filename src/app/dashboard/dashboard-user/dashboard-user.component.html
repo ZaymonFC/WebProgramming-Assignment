@@ -12,17 +12,26 @@
       <div class="container">
         <div class="row">
           <div class="col-md panel panel-default">
-            {{ this.user.email }}
+            {{ this.user.email }} | {{this.user.rank}}
           </div>
         </div>
         <br/>
         <div class="row">
-          <div class="col-md">
-            <button class="btn btn-outline-info" (click)="userDetail()">Manage User</button>
+          <div class="col-md" *ngIf="user.rank === 'user' && permissions.hasPermission('promote>group-admin')">
+            <button class="btn btn-outline-info" (click)="promoteGroupAdmin()">Promote To Group Admin</button>
           </div>
-          <div class="col-md">
+          <div class="col-md" *ngIf="user.rank === 'group-admin' && permissions.hasPermission('promote>super-admin')">
+              <button class="btn btn-outline-info" (click)="promoteSuperAdmin()">Promote To Super Admin</button>
+            </div>
+          <div class="col-md" *ngIf="permissions.hasPermission('delete>user')">
             <button class="btn btn-outline-danger" (click)="removeUser()">Delete User</button>
           </div>
+          <div class="col-md" *ngIf="user.rank === 'group-admin' && permissions.hasPermission('demote>group-admin')">
+            <button class="btn btn-outline-danger" (click)="demoteGroupAdmin()">Demote To User</button>
+          </div>
+          <div class="col-md" *ngIf="user.rank === 'super-admin' && permissions.hasPermission('demote>super-admin')">
+              <button class="btn btn-outline-danger" (click)="demoteSuperAdmin()">Demote To Group Admin</button>
+            </div>
         </div>
       </div>
     </div>

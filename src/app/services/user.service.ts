@@ -67,4 +67,10 @@ export class UserService {
   removeUser(id: string): any {
     return this.http.delete(this.url + '/' + id)
   }
+
+  changeRank(id: string, rank: string): any {
+    return this.http.patch(this.url + '/' + id, {
+      rank: rank
+    })
+  }
 }

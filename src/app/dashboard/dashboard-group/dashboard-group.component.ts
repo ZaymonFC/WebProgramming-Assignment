@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { GroupService } from '../../group/group.service';
 import { UserService } from '../../services/user.service';
 import { DashboardComponent } from '../dashboard.component';
+import { PermissionService } from '../../services/permission.service';
 
 @Component({
   selector: 'app-dashboard-group',
@@ -21,6 +22,7 @@ export class DashboardGroupComponent implements OnInit {
     private router: Router,
     private service: GroupService,
     private userService: UserService,
+    private permissions: PermissionService,
   ) {
     this.collapseClass = 'hide'
     this.collapsed = true

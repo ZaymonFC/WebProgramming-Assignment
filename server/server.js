@@ -122,6 +122,12 @@ app.post('/user', async (req, res) => {
 app.patch('/user/:id', async (req, res) => {
   console.log('Updating user')
   const changes = req.body
+
+  if (!changes) {
+    res.send(400)
+    return
+  }
+
   const selector = {
     id: req.params.id
   }
@@ -129,7 +135,7 @@ app.patch('/user/:id', async (req, res) => {
   const updateUser = updateItems.bind(null, readUser, writeUser, selector)
 
   await updateUser(changes)
-  res.send("OK")
+  res.send({status: "OK"})
 })
 
 const entities = ['User', 'Group']
@@ -147,17 +153,22 @@ app.delete('/user/:id', async (req, res) => {
   const deleteUser = deleteItems.bind(null, readUser, writeUser)
 
   await deleteUser({
-    id: req.params.id
+    id: id
   })
 
   // Remove all references to the user from groups
   const removeUserReferenceGroups = removeReference.bind(null, readGroup, writeGroup)
   await removeUserReferenceGroups({
-    id: 
+    key: 'users',
+    value: id
   })
   
   // Remove all regerences to the user from channels
   const removeUserReferenceChannels = removeReference.bind(null, readChannel, writeChannel)
+  await removeUserReferenceChannels({
+    key: 'users',
+    value: id
+  })
 
   res.send({ status: "OK" })
 })
@@ -358,11 +369,15 @@ app.patch('/group/:id/user', async (req, res) => {
     res.send({status: "OK"})
     return
   } else if (req.body.method === 'remove-user') {
+    // Remove ref to user from group
     const removeGroupFK = removeForeignKey.bind(null, readGroup, writeGroup, { id: req.params.id })
     await removeGroupFK({
       key: 'users',
       value: userId
     })
+    // Remove ref to user from all the groups channels
+
+
     res.send({status: "OK"})
     return
   }
