@@ -66,6 +66,8 @@ import { login } from './routes/user/login';
 import { listUsers } from './routes/user/list';
 import { findUser } from './routes/user/find';
 import { createUser } from './routes/user/create';
+import { listGroups } from './routes/group/list';
+import { createGroup } from './routes/group/create';
 
 // Seeder Route
 app.get('/resetAndSeedDb', async(req, res) => resetAndSeedDb(req, res))
@@ -161,12 +163,7 @@ app.get('/otherUsers/:id', async (req, res) => {
 //
 // ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
 // Get Groups
-app.get('/group', async (req, res) => {
-  const selectNGroups = selectN.bind(null, readGroup)
-
-  const groups = await selectNGroups(100)
-  res.send(groups)
-})
+app.get('/group', async (req, res) => listGroups(req, res))
 
 app.get('/group/:id', async (req, res) => {
   const findGroup = findItems.bind(null, readGroup)
@@ -202,26 +199,7 @@ app.get('/group/:id', async (req, res) => {
 })
 
 // Create Group
-app.post('/group', async (req, res) => {
-  console.log('Creating group')
-  const group = sanitiseGroupObject(req.body)
-  if (group == null) {
-    res.sendStatus(400)
-  }
-  group.id = uuid()
-
-  const insertGroup = insertItems.bind(null, readGroup, writeGroup, uniqueFields.Group)
-
-  try {
-    await insertGroup(group)
-    res.send(group)
-  } catch (e) {
-    if (e.message === 'not-unique') {
-      res.send('not-unique')
-      return
-    }
-  }
-})
+app.post('/group', async (req, res) => createGroup(req, res))
 
 // Update Group
 app.patch('/group/:id', async (req, res) => {
