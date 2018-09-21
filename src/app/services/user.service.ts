@@ -16,10 +16,11 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   logInUser(username): void {
-
+    console.log('Attempting Login')
     this.http.get(environment.API_URL + '/login/' + username)
     .subscribe((response: User) => {
-      if (response != null) {
+      console.log(response)
+      if (response) {
         this.initSession(response)
       }
     },
@@ -31,6 +32,7 @@ export class UserService {
   initSession(user: User) {
     sessionStorage.setItem('user', JSON.stringify(user))
     this.user = user
+    console.log(user)
     this.loggedIn = true
   }
 

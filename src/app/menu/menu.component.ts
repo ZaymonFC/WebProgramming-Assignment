@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
     // Subscribe to route changes to re-evalutate logged in status
     router.events.subscribe(() => {
       this.loggedIn = userService.userLoggedIn()
-      if (this.userService.userLoggedIn()) {
+      if (this.loggedIn) {
         this.user = userService.getUser()
       }
     })

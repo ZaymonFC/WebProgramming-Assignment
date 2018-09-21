@@ -37,14 +37,14 @@ export class DashboardGroupComponent implements OnInit {
   }
 
   groupDetail() {
-    console.log(this.group.id)
-    this.router.navigate(['/group', this.group.id])
+    console.log(this.group._id)
+    this.router.navigate(['/group', this.group._id])
   }
 
   removeGroup() {
-    this.service.removeGroup(this.group.id)
+    this.service.removeGroup(this.group._id)
       .subscribe((data: any) => console.log(data))
-    this.emitter.emit(this.group.id)
+    this.emitter.emit(this.group._id)
   }
 
 }

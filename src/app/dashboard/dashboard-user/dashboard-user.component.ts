@@ -34,31 +34,31 @@ export class DashboardUserComponent implements OnInit {
   }
 
   userDetail() {
-    console.log(this.user.id)
-    this.router.navigate(['/user', this.user.id])
+    console.log(this.user._id)
+    this.router.navigate(['/user', this.user._id])
   }
 
   removeUser() {
-    this.service.removeUser(this.user.id)
+    this.service.removeUser(this.user._id)
       .subscribe(data => console.log(data))
 
-    this.emitter.emit(this.user.id)
+    this.emitter.emit(this.user._id)
   }
 
   promoteGroupAdmin() {
-    this.changeRank(this.user.id, 'group-admin')
+    this.changeRank(this.user._id, 'group-admin')
   }
 
   promoteSuperAdmin() {
-    this.changeRank(this.user.id, 'super-admin')
+    this.changeRank(this.user._id, 'super-admin')
   }
 
   demoteGroupAdmin() {
-    this.changeRank(this.user.id, 'user')
+    this.changeRank(this.user._id, 'user')
   }
 
   demoteSuperAdmin() {
-    this.changeRank(this.user.id, 'group-admin')
+    this.changeRank(this.user._id, 'group-admin')
   }
 
   private changeRank(id: string, rank: string) {

@@ -1,6 +1,6 @@
 export interface GroupSummary {
   name: string
-  id: string
+  _id: string
   description: string
   users: string[]
   channels: string[]

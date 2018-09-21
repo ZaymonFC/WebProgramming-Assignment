@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
         if (this.userService.getUser().rank === 'user') {
           if (this.groups) {
             this.groups = this.groups.filter(group => (
-              group.users.some(user => user === this.userService.getUser().id)
+              group.users.some(user => user === this.userService.getUser()._id)
             ))
           }
         }
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
 
   removeGroup(id) {
     console.log('Filtering List: ', id)
-    this.groups = this.groups.filter(element => element.id !== id)
+    this.groups = this.groups.filter(element => element._id !== id)
   }
 
   createUser(event: Event) {
@@ -78,14 +78,16 @@ export class DashboardComponent implements OnInit {
 
     this.userService.createUser(this.form_username, this.form_email)
       .subscribe((data: User) => {
-        this.users.push(data)
-        this.form_username = ''
-        this.form_email = ''
+        if (data) {
+          this.users.push(data)
+          this.form_username = ''
+          this.form_email = ''
+        }
       })
   }
 
   removeUser(id) {
     console.log('Filtering User List')
-    this.users = this.users.filter(element => element.id !== id)
+    this.users = this.users.filter(element => element._id !== id)
   }
 }

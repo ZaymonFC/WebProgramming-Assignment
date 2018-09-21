@@ -4,7 +4,7 @@ import { ChannelSummary } from './channel-summary';
 
 export interface Group {
     name: string
-    id: string
+    _id: string
     description: string
     users: User[]
     channels: ChannelSummary[]

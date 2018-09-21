@@ -39,15 +39,15 @@ export class GroupComponent implements OnInit {
 
         // Filter Channels If User
         if (this.userService.getUser().rank === 'user') {
-          console.log(this.group.channels, this.userService.getUser().id)
+          console.log(this.group.channels, this.userService.getUser()._id)
           if (this.group.channels) {
             this.group.channels = this.group.channels.filter(channel => (
-              channel.users.some(user => user === this.userService.getUser().id)
+              channel.users.some(user => user === this.userService.getUser()._id)
             ))
           }
         }
 
-        this.groupService.getOtherUsers(this.group.id)
+        this.groupService.getOtherUsers(this.group._id)
           .subscribe((userData: User[]) => this.otherUsers = userData)
       })
 
@@ -55,7 +55,7 @@ export class GroupComponent implements OnInit {
 
   createChannel(event: Event) {
     event.preventDefault()
-    this.channelService.createChannel(this.form_createChannel, this.group.id)
+    this.channelService.createChannel(this.form_createChannel, this.group._id)
       .subscribe((data: ChannelSummary) => this.group.channels.push(data))
     this.form_createChannel = ''
   }
@@ -66,30 +66,30 @@ export class GroupComponent implements OnInit {
       .subscribe((data: any) => console.log(data))
 
     this.group.channels = this.group.channels.filter(channel => {
-      return channel.id !== channelId
+      return channel._id !== channelId
     })
   }
 
   addUser(id) {
     console.log('Adding user to group with id: ', id)
-    this.groupService.addUser(id, this.group.id)
+    this.groupService.addUser(id, this.group._id)
       .subscribe((data: any) => {
-        const items = this.otherUsers.filter(element => element.id === id)
+        const items = this.otherUsers.filter(element => element._id === id)
         const user: User = items.shift()
         this.group.users.push(user)
-        this.otherUsers = this.otherUsers.filter(element => element.id !== id)
+        this.otherUsers = this.otherUsers.filter(element => element._id !== id)
       })
   }
 
   removeUser(id) {
     console.log('Removing user from group with id: ', id)
-    this.groupService.removeUser(id, this.group.id)
+    this.groupService.removeUser(id, this.group._id)
       .subscribe((data: any) => {
         console.log(data)
-        const items = this.group.users.filter(e => e.id === id)
+        const items = this.group.users.filter(e => e._id === id)
         const user: User = items.shift()
         this.otherUsers.push(user)
-        this.group.users = this.group.users.filter(element => element.id !== id)
+        this.group.users = this.group.users.filter(element => element._id !== id)
       })
   }
 
