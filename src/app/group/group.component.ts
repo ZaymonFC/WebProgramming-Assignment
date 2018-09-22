@@ -20,6 +20,8 @@ export class GroupComponent implements OnInit {
 
   // Form fields
   private form_createChannel: string
+  private showError = false
+  private error: string
 
   constructor(
     private route: ActivatedRoute,
@@ -56,7 +58,16 @@ export class GroupComponent implements OnInit {
   createChannel(event: Event) {
     event.preventDefault()
     this.channelService.createChannel(this.form_createChannel, this.group._id)
-      .subscribe((data: ChannelSummary) => this.group.channels.push(data))
+      .subscribe((data: any) => {
+        console.log(data)
+        if (data.status === 'not-unique') {
+          this.showError = true
+          this.error = 'Please enter a unique channel name for this group'
+        } else {
+          this.group.channels.push(data)
+          this.showError = false
+        }
+      })
     this.form_createChannel = ''
   }
 
@@ -74,6 +85,7 @@ export class GroupComponent implements OnInit {
     console.log('Adding user to group with id: ', id)
     this.groupService.addUser(id, this.group._id)
       .subscribe((data: any) => {
+        console.log(data)
         const items = this.otherUsers.filter(element => element._id === id)
         const user: User = items.shift()
         this.group.users.push(user)

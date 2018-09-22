@@ -8,7 +8,7 @@
 
       <p class="lead">{{user.username}}</p>
       <div *ngIf="permissions.hasPermission('channel>manageUsers')">
-        <button class="btn btn-outline-danger" (click)="removeUser(user.id)">Remove User From Channel</button>
+        <button class="btn btn-outline-danger" (click)="removeUser(user._id)">Remove User From Channel</button>
       </div>
     </li>
     <br>
@@ -18,7 +18,7 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <button class="btn btn-outline-info" (click)="backToGroup(group.id)">Back To {{group.name}}</button>
+      <button class="btn btn-outline-info" (click)="backToGroup(group._id)">Back To {{group.name}}</button>
     </div>
   </div>
 </div>
@@ -33,7 +33,7 @@
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let user of otherUsers">
           {{user.username}}
-          <button class="btn btn-outline-info" (click)="addUser(user.id)">Add To Channel</button>
+          <button class="btn btn-outline-info" (click)="addUser(user._id)">Add To Channel</button>
         </li>
       </ul>
     </div>

@@ -16,8 +16,8 @@ export async function deleteUser(req, res) {
     if (r.deletedCount !== 1) throw 'Error deleting user'
 
     // Remove References to the user
-    r = await groupCollection.update({}, { $pull: { users: plainId } })
-    r = await channelCollection.update({}, { $pull: { users: plainId } })
+    r = await groupCollection.updateMany({}, { $pull: { users: plainId } })
+    r = await channelCollection.updateMany({}, { $pull: { users: plainId } })
 
     res.send({ status: 'OK' })
   } catch (error) {

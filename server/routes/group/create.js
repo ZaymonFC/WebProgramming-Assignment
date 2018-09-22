@@ -15,6 +15,14 @@ export async function createGroup(req, res) {
     // Send the created Group
     res.send(createdGroup.ops.shift())
   } catch (e) {
-    console.log(e)
+    if (e.code === 11000) {
+      console.log(e.errmsg)
+      res.send({status: 'not-unique'})
+    }
+    else
+    {
+      console.log(e)
+      res.send({status: 'Something went wrong'})
+    }
   }
 }

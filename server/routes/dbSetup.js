@@ -15,13 +15,14 @@ export async function resetAndSeedDb(req, res) {
   // Create new collections
   for (let collection of collectionNames) {
     await db.createCollection(collection)
-    console.log('Created Channel: ', collection)
+    console.log('Created Collection: ', collection)
   }
 
   // Create Indexes
   db.collection('user').createIndex({ username: 1 }, { unique: true })
   db.collection('user').createIndex({ email: 1 }, { unique: true })
   db.collection('group').createIndex({ name: 1 }, { unique: true })
+  db.collection('channel').createIndex({ name: 1, groupId: 1 }, { unique: true })
   console.info('Created collection constraints')
 
   // Seed Collection Data
@@ -40,8 +41,6 @@ export async function resetAndSeedDb(req, res) {
 
 async function dropCollection(db, collectionName) {
   await db.collection(collectionName).drop((err, result) => {
-    if (err) throw `Error dropping collection: ${collectionName}`
-
     console.log(`Dropped Collection: ${collectionName}`)
   })
 }

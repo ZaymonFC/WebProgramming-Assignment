@@ -17,10 +17,10 @@
                 </div>
                 <div class="row">
                   <div class="col-md">
-                    <button class="btn btn-outline-info" (click)="enterChannel(channel.id)">Enter Channel</button>
+                    <button class="btn btn-outline-info" (click)="enterChannel(channel._id)">Enter Channel</button>
                   </div>
                   <div class="col-md" *ngIf="permissions.hasPermission('create>channel')">
-                    <button class="btn btn-outline-info" (click)="removeChannel(channel.id)">Remove Channel</button>
+                    <button class="btn btn-outline-info" (click)="removeChannel(channel._id)">Remove Channel</button>
                   </div>
                 </div>
               </div>
@@ -40,7 +40,7 @@
                 <div class="col-md">
                   <p class="lead">{{user.username}}</p>
                   <div *ngIf="permissions.hasPermission('group>manageUsers')">
-                    <button class="btn btn-outline-danger" (click)="removeUser(user.id)">Remove User From Group</button>
+                    <button class="btn btn-outline-danger" (click)="removeUser(user._id)">Remove User From Group</button>
                   </div>
                 </div>
               </div>
@@ -54,12 +54,14 @@
         <div class="col-md-9">
           <div *ngIf="permissions.hasPermission('create>channel')">
             <form (submit)="createChannel($event)">
-               <div class="form-group">
-                 <label for="Channel">Create Channel:</label>
-                 <input type="text" class="form-control" [(ngModel)]='form_createChannel' name="channel" placeholder="Channel Name">
-               </div>
-               <input type="submit" class="btn btn-primary" value="Create Channel">
-             </form>
+              <div class="form-group">
+                <label for="Channel">Create Channel:</label>
+                <input type="text" class="form-control" [(ngModel)]='form_createChannel' name="channel" placeholder="Channel Name">
+              </div>
+              <input type="submit" class="btn btn-primary" value="Create Channel">
+            </form>
+            <br>
+            <div class="alert alert-danger" *ngIf="showError">{{error}}</div>
           </div>
         </div>
         <div class="col-md-3">
@@ -79,7 +81,7 @@
       <ul class="list-group">
         <li class="list-group-item" *ngFor="let user of otherUsers">
           {{user.username}}
-          <button class="btn btn-outline-info" (click)="addUser(user.id)">Add To Group</button>
+          <button class="btn btn-outline-info" (click)="addUser(user._id)">Add To Group</button>
         </li>
       </ul>
     </div>
