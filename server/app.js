@@ -68,6 +68,10 @@ import { findUser } from './routes/user/find';
 import { createUser } from './routes/user/create';
 import { listGroups } from './routes/group/list';
 import { createGroup } from './routes/group/create';
+import { findChannel } from './routes/channel/find';
+import { updateUser } from './routes/user/update';
+import { deleteUser } from './routes/user/delete';
+import { usersNotInGroup } from './routes/user/otherUsers';
 
 // Seeder Route
 app.get('/resetAndSeedDb', async(req, res) => resetAndSeedDb(req, res))
@@ -78,125 +82,23 @@ app.get('/resetAndSeedDb', async(req, res) => resetAndSeedDb(req, res))
 
 // Logging in
 app.get('/login/:username', async (req, res) => login(req, res))
-// List
+// Retrieve
 app.get('/user', async (req, res) => listUsers(req, res))
-// Find by ID 
 app.get('/user/:id', async (req, res) => findUser(req, res))
-
-// Create user
+app.get('/otherUsers/:id', async (req, res) => usersNotInGroup(req, res))
+// Create
 app.post('/user', async (req, res) => createUser(req, res))
-
 // Update
-app.patch('/user/:id', async (req, res) => {
-  console.log('Updating user')
-  const changes = req.body
-
-  if (!changes) {
-    res.send(400)
-    return
-  }
-
-  const selector = {
-    id: req.params.id
-  }
-
-  const updateUser = updateItems.bind(null, readUser, writeUser, selector)
-
-  await updateUser(changes)
-  res.send({status: "OK"})
-})
-
+app.patch('/user/:id', async (req, res) => updateUser(req, res))
 // Delete
-app.delete('/user/:id', async (req, res) => {
-  console.log('Deleting user')
-
-  const id = req.params.id
-  if (!id) {
-    res.sendStatus(400)
-    return
-  }
-
-  const deleteUser = deleteItems.bind(null, readUser, writeUser)
-
-  await deleteUser({
-    id: id
-  })
-
-  // Remove all references to the user from groups
-  const removeUserReferenceGroups = removeReference.bind(null, readGroup, writeGroup)
-  await removeUserReferenceGroups({
-    key: 'users',
-    value: id
-  })
-  
-  // Remove all regerences to the user from channels
-  const removeUserReferenceChannels = removeReference.bind(null, readChannel, writeChannel)
-  await removeUserReferenceChannels({
-    key: 'users',
-    value: id
-  })
-
-  res.send({ status: "OK" })
-})
-
-app.get('/otherUsers/:id', async (req, res) => {
-  console.log('Fetching users that aren\'t in group: ' + req.params.id)
-
-  // Fetch the group
-  const findGroups = findItems.bind(null, readGroup)
-  const items = await findGroups({ id: req.params.id })
-  if (!items) {
-    res.send({status: FAILED})
-    return
-  }
-  const group = items.shift()
-  
-  const selectUsers = selectN.bind(null, readUser)
-  let users = await selectUsers(100)
-  if (group.users) {
-    users = users.filter(user => !group.users.includes(user.id))
-  }
-
-  res.send(users)
-})
+app.delete('/user/:id', async (req, res) => deleteUser(req, res))
 
 //
 // ─── GROUP CRUD ─────────────────────────────────────────────────────────────────
 // Get Groups
 app.get('/group', async (req, res) => listGroups(req, res))
 
-app.get('/group/:id', async (req, res) => {
-  const findGroup = findItems.bind(null, readGroup)
-  const findUsers = findItems.bind(null, readUser)
-  const findChannels = findItems.bind(null, readChannel)
-
-  const items = await findGroup({
-    id: req.params.id
-  })
-
-  if (!items) {
-    res.send('not-found')
-    return
-  }
-
-  let group = items.shift()
-  // Add nested user objects
-  if (group.users) {
-    group.users = await Promise.all(group.users.map(async (id) => {
-      let user = await findUsers({id: id})
-      return user.shift()
-    }))
-  }
-
-  // Find Associated Channels
-  if(group.channels) {
-    group.channels = await Promise.all(group.channels.map(async (id) => {
-      let channel = await findChannels({id: id})
-      return channel.shift()
-    }))
-  }
-  res.json(group)
-})
+app.get('/group/:id', async (req, res) => findGroup(req, res))
 
 // Create Group
 app.post('/group', async (req, res) => createGroup(req, res))
@@ -327,28 +229,7 @@ app.patch('/group/:id/user', async (req, res) => {
   return
 })
 
-app.get('/channel/:id', async (req, res) => {
-  const channelId = req.params.id
-  const findChannels = findItems.bind(null, readChannel)
-
-  const items = await findChannels({ id: channelId })
-  if (!items) {
-    res.sendStatus(404)
-    return
-  }
-  const channel = items.shift()
-
-  // Populate users from channel
-  if (channel.users) {
-    const findUsers = findItems.bind(null, readUser)
-    channel.users = await Promise.all(channel.users.map(async (userId) => {
-      const items = await findUsers({ id: userId })
-      return items.shift()
-    }))
-  }
-
-  res.send(channel)
-})
+app.get('/channel/:id', async (req, res) => findChannel(req, res))
 
 // Add or remove users from a channel
 app.patch('/channel', async (req, res) => {
