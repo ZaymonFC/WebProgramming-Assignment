@@ -6,7 +6,7 @@
     <div class="card-body">
       <ul class="list-group" #autoScroller [scrollTop]="autoScroller.scrollHeight">
         <li *ngFor="let message of messages" class="list-item">
-          {{message.text}}
+          <small>{{ message.timeStamp | date:'medium' }}</small> | {{message.text}}
         </li>
       </ul>
 
@@ -19,7 +19,7 @@
         <label for="message">Enter Message:</label>
         <input (keyup)="keyUp($event.key)" type="text" class="form-control" [(ngModel)]="message">
       </div>
-      <button (click)="sendMessage()" class="btn btn-outline-success">Send Message</button>
+      <button (click)="sendTextMessage()" class="btn btn-outline-success">Send Message</button>
     </div>
   </div>
 </div>

@@ -5,6 +5,7 @@ export async function deleteChannel(req, res) {
 
   const channelCollection = req.db.collection('channel')
   const groupCollection = req.db.collection('group')
+  const chatCollection = req.db.collection('chat')
   const selector = { _id: ObjectId(req.params.id) }
 
   try {
@@ -18,6 +19,9 @@ export async function deleteChannel(req, res) {
       { _id: ObjectId(groupId) },
       { $pull: { channels: ObjectId(channel._id) } }
     )
+    
+    r = await chatCollection.deleteMany({ channelId: req.params.id })
+    await imageCollection.deleteMany({ channelId: req.params.id })
 
     res.send({ status: 'OK' })
   } catch (error) {

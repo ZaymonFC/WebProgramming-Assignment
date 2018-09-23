@@ -3,7 +3,7 @@ export async function resetAndSeedDb(req, res) {
   let db = req.db
 
   // Remove old collections
-  let collectionNames = ['user', 'group', 'chat', 'channel']
+  let collectionNames = ['user', 'group', 'chat', 'channel', 'image']
   for (let collection of collectionNames) {
     try {
       await dropCollection(db, collection)
@@ -23,6 +23,7 @@ export async function resetAndSeedDb(req, res) {
   db.collection('user').createIndex({ email: 1 }, { unique: true })
   db.collection('group').createIndex({ name: 1 }, { unique: true })
   db.collection('channel').createIndex({ name: 1, groupId: 1 }, { unique: true })
+  db.collection('chat').createIndex({timeStamp: 1})
   console.info('Created collection constraints')
 
   // Seed Collection Data

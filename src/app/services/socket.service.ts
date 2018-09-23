@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import * as io from 'socket.io-client'
+import { Message } from 'src/app/types/message';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,22 @@ export class SocketService {
   constructor() {
   }
 
-  sendMessage(message) {
+  joinChannel(channel: string, username: string): void {
+    this.socket.emit('enter-channel', {
+      channel: channel,
+      username: username
+    })
+  }
+
+  sendTextMessage(text: string, channelId: string, userId: string) {
+    const message: Message = {
+      text: text,
+      channelId: channelId,
+      userId: userId,
+      type: 'text',
+      timeStamp: Date.now(),
+      photoId: null
+    }
     this.socket.emit('add-message', message)
   }
 

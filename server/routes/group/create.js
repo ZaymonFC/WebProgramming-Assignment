@@ -16,7 +16,7 @@ export async function createGroup(req, res) {
     res.send(createdGroup.ops.shift())
   } catch (e) {
     if (e.code === 11000) {
-      console.log(e.errmsg)
+      console.log('DUPLICATE GROUP')
       res.send({status: 'not-unique'})
     }
     else

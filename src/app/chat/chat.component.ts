@@ -1,27 +1,34 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { Router } from '@angular/router'
-import { SocketService } from '../services/socket.service';
-import { Subscription } from 'rxjs';
+import { SocketService } from '../services/socket.service'
+import { Subscription } from 'rxjs'
 import { UserService } from '../services/user.service'
-import { Channel } from 'src/app/types/channel';
+import { Channel } from 'src/app/types/channel'
+import { Message } from 'src/app/types/message'
+import { ChatService } from './chat.service';
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  private username = ''
   private messages
   private message
   private connection: Subscription
-  @Input() private channel: Channel
+
+  private username: string
+  private userId: string
+
+  @Input()
+  private channel: Channel
 
   constructor(
     private router: Router,
     private socketService: SocketService,
-    private userService: UserService
+    private userService: UserService,
+    private chatService: ChatService
   ) {
-
     // Check if the user is logged in
     if (!this.userService.userLoggedIn()) {
       this.router.navigateByUrl('')
@@ -30,27 +37,40 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     console.log('[Chat] accessing username')
     this.username = this.userService.getUser().username
+    this.userId = this.userService.getUser()._id
     this.message = ''
     this.messages = []
   }
 
   ngOnInit() {
-    console.log('Connecting to socket service');
-    this.connection = this.socketService.getMessages()
-      .subscribe(message => {
-        this.messages.push(message)
-        this.message = ''
+    console.log('Connecting to socket service')
+    this.chatService.getMessages(this.channel._id)
+      .subscribe((data: Message[]) => {
+        this.messages = data
       })
+
+    this.connection = this.socketService
+      .getMessages()
+      .subscribe((message: Message) => {
+        this.messages.push(message)
+      })
+
+    this.socketService.joinChannel(this.channel._id, this.username)
   }
 
-  sendMessage() {
+  sendTextMessage() {
     console.log(this.message)
-    this.socketService.sendMessage(`[${this.username}] - ${this.message}`)
+    this.socketService.sendTextMessage(
+      `[${this.username}] - ${this.message}`,
+      this.channel._id,
+      this.userId
+    )
+    this.message = ''
   }
 
   keyUp(key: any) {
     if (key === 'Enter') {
-      this.sendMessage()
+      this.sendTextMessage()
     }
   }
 
@@ -59,5 +79,4 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.connection.unsubscribe()
     }
   }
-
 }
