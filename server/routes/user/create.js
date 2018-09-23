@@ -1,7 +1,7 @@
 import { sanitiseUserObject } from '../../sanitizers'
 
 export async function createUser(req, res) {
-  console.log('POST::user')
+  console.log('[POST::user]')
   const user = sanitiseUserObject(req.body)
   
   if (user == null) {

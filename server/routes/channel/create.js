@@ -2,7 +2,7 @@ import { sanitiseChannelObject } from '../../sanitizers'
 import { ObjectId } from 'mongodb'
 
 export async function createChannel(req, res) {
-  console.info('POST::channel')
+  console.info('[POST::channel]')
   const channelCollection = req.db.collection('channel')
   const groupCollection = req.db.collection('group')
 

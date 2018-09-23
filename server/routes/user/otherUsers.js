@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function usersNotInGroup(req, res) {
-  console.info('GET::otherUsers/:id', req.params.id)
+  console.info('[GET::otherUsers/:id]', req.params.id)
   const userCollection = req.db.collection('user')
   const groupCollection = req.db.collection('group')
  

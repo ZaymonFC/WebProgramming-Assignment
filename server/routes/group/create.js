@@ -1,7 +1,7 @@
 import { sanitiseGroupObject } from '../../sanitizers'
 
 export async function createGroup(req, res) {
-  console.log('POST::Group (Create)')
+  console.log('[POST::Group] (Create)')
 
   const group = sanitiseGroupObject(req.body)
   if (group == null) {

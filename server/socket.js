@@ -1,4 +1,4 @@
-module.exports = (app, io) => {
+export function sockets(app, io) {
   console.log("Server Socket Initialised")
 
   // Respond to a connection request

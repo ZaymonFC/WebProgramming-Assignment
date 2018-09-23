@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function manageChannelUser(req, res) {
-  console.log('PATCH::channel', req.body)
+  console.log('[PATCH::channel]', req.body)
 
   const channelCollection = req.db.collection('channel')
   const selector = { _id: ObjectId(req.body.channelId) }

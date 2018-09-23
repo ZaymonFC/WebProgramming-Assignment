@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function findChannel(req, res) {
-  console.info('GET::channel/:id', req.params.id)
+  console.info('[GET::channel/:id]', req.params.id)
   const channelCollection = req.db.collection('channel')
   const userCollection = req.db.collection('user')
 

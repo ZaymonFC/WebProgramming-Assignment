@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function deleteChannel(req, res) {
-  console.info('DELETE::channel/:id', req.params.id)
+  console.info('[DELETE::channel/:id]', req.params.id)
 
   const channelCollection = req.db.collection('channel')
   const groupCollection = req.db.collection('group')

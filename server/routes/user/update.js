@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function updateUser(req, res) {
-  console.info('PATCH::user')
+  console.info('[PATCH::user]')
   const collection = req.db.collection('user')
 
   let changes = req.body

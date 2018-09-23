@@ -1,5 +1,5 @@
 export async function login(req, res) {
-  console.info('GET::login/:username', `username: ${req.params.username}`)
+  console.info('[GET::login/:username]', `username: ${req.params.username}`)
   
   let collection = req.db.collection('user')
   let user = await collection.findOne({ username: req.params.username })

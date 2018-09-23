@@ -2,8 +2,8 @@ import { ObjectId } from 'mongodb'
 
 export async function manageGroupUser(req, res) {
   console.log(
-    'PATCH::group/:id/user ',
-    `\n Method: Group: ${req.params.id} ${req.body.method}`
+    '[PATCH::group/:id/user]',
+    `\n Group: ${req.params.id} Method: ${req.body.method}`
   )
 
   const groupCollection = req.db.collection('group')

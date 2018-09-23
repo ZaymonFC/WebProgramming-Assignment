@@ -1,5 +1,5 @@
 export async function listGroups(req, res) {
-  console.log('GET::group')
+  console.log('[GET::group]')
 
   const collection = req.db.collection('group')
   const groups = await collection

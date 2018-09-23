@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 export async function findGroup(req, res) {
-  console.log('GET::group/:id', req.params.id)
+  console.log('[GET::group/:id]', req.params.id)
 
   const groupCollection = req.db.collection('group')
   const userCollection = req.db.collection('user')
