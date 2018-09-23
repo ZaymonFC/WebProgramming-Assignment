@@ -8,6 +8,6 @@ export async function login(req, res) {
   if (user) {
     res.send(user)
   } else {
-    res.send(undefined)
+    res.send({status: 'Incorrect username or password'})
   }
 }

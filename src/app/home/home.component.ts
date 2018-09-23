@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
     if (this.userService.userLoggedIn()) {
       this.router.navigateByUrl('dashboard')
     } else {
-      this.statusMessage = 'That user does not exist on the server'
+      this.statusMessage = 'Username or password is incorrect'
       this.showError = true
     }
   }

@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "test-server": "mocha --require @babel/register --require @babel/polyfill ./server",
+    "test-server": "mocha --require @babel/register --require @babel/polyfill ./server --exit",
     "start-server": "nodemon ./server/server.js --exec babel-node --presets env --ignore ./server/data",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -66,6 +66,7 @@
     "karma-jasmine": "~1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "^5.4.1",
+    "should": "^13.2.3",
     "superagent": "^4.0.0-beta.5",
     "supertest": "^3.3.0",
     "ts-node": "~5.0.1",

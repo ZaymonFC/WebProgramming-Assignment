@@ -3,4 +3,5 @@ export interface User {
   username: string
   rank: string
   email: string
+  imageId: string | null
 }

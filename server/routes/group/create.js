@@ -5,7 +5,8 @@ export async function createGroup(req, res) {
 
   const group = sanitiseGroupObject(req.body)
   if (group == null) {
-    res.sendStatus(400)
+    res.send({ status: 'Something went wrong' })
+    return
   }
 
   const collection = req.db.collection('group')
@@ -17,12 +18,10 @@ export async function createGroup(req, res) {
   } catch (e) {
     if (e.code === 11000) {
       console.log('DUPLICATE GROUP')
-      res.send({status: 'not-unique'})
-    }
-    else
-    {
+      res.send({ status: 'not-unique' })
+    } else {
       console.log(e)
-      res.send({status: 'Something went wrong'})
+      res.send({ status: 'Something went wrong' })
     }
   }
 }

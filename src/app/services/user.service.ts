@@ -18,9 +18,11 @@ export class UserService {
   logInUser(username): void {
     console.log('Attempting Login')
     this.http.get(environment.API_URL + '/login/' + username)
-    .subscribe((response: User) => {
+    .subscribe((response: any) => {
       console.log(response)
-      if (response) {
+      if (response.status === 'Incorrect username or password') {
+        return
+      } else {
         this.initSession(response)
       }
     },
