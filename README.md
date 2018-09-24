@@ -167,6 +167,16 @@ The responsibilities of the angular client are to present data to the user and t
 <br> _Outputs:_
     - Status Message
 
+## Angular
+### Routes
+- __''__, redirects to component HomeComponent
+- __'chat'__, redirects to component ChatComponent
+- __'404'__, redirects to component NotFoundComponent
+- __'dashboard'__, redirects to component DashboardComponent
+- __'group/:id'__, redirects to component GroupComponent with a group ID as input
+- __'channel/:id'__, redirects to component ChannelComponent with a channel ID as input
+- __'**'__, redirectTo component '404' (not found)
+
 ## Components
  Various components were created throughout development, some components form hierarchies of parent and child components. The app component is the top level component in the application. The app component in this application contains a simple template which include a router outlet and the menu bar. When the application navigates to other routes the router outlet will be populated with different components.
 
