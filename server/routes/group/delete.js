@@ -5,7 +5,6 @@ export async function deleteGroup(req, res) {
   const groupCollection = req.db.collection('group')
   const channelCollection = req.db.collection('channel')
   const chatCollection = req.db.collection('chat')
-  const imageCollection = req.db.collection('image')
 
   try {
     const selector = { _id: ObjectId(req.params.id) }
@@ -18,7 +17,6 @@ export async function deleteGroup(req, res) {
 
       let plainIds = group.channels.map(element => element.toString())
       await chatCollection.deleteMany({ channelId: { $in: plainIds } })
-      await imageCollection.deleteMany({ channelId: { $in: plainIds } })
     }
 
     let r = await groupCollection.deleteOne(selector)

@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
 
   private form_username = ''
   private form_email = ''
+  private form_password = ''
 
   constructor(
     private userService: UserService,
@@ -74,14 +75,15 @@ export class DashboardComponent implements OnInit {
   createUser(event: Event) {
     event.preventDefault()
     console.log('Creating User: ', this.form_username, this.form_email)
-    if (!this.form_email || !this.form_username) { return }
+    if (!this.form_email || !this.form_username || !this.form_password) { return }
 
-    this.userService.createUser(this.form_username, this.form_email)
+    this.userService.createUser(this.form_username, this.form_email, this.form_password)
       .subscribe((data: User) => {
         if (data) {
           this.users.push(data)
           this.form_username = ''
           this.form_email = ''
+          this.form_password = ''
         }
       })
   }

@@ -1,5 +1,5 @@
 export function sanitiseUserObject(user) {
-  if(!(user.username && user.email)) {
+  if(!(user.username && user.email && user.password)) {
     return null
   }
 
@@ -8,6 +8,7 @@ export function sanitiseUserObject(user) {
     username: user.username,
     rank: rank,
     email: user.email,
+    password: user.password
   }
 }
 

@@ -12,9 +12,11 @@ import { UserService } from '../services/user.service';
 })
 export class HomeComponent implements OnInit {
   private username: string
+  private password: string
   private showError: boolean
   private statusMessage: string
   private loggedIn: boolean
+
 
   constructor(
     private router: Router,
@@ -23,6 +25,7 @@ export class HomeComponent implements OnInit {
     private userService: UserService
   ) {
     this.username = ''
+    this.password = ''
     this.showError = false
     this.statusMessage = ''
   }
@@ -39,7 +42,7 @@ export class HomeComponent implements OnInit {
       return
     }
 
-    this.userService.logInUser(this.username)
+    this.userService.logInUser(this.username, this.password)
 
     if (this.userService.userLoggedIn()) {
       this.router.navigateByUrl('dashboard')

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { User } from '../types/user';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core'
+import { User } from '../types/user'
+import { HttpClient } from '@angular/common/http'
 import { environment } from 'src/environments/environment'
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 @Injectable({
@@ -13,22 +13,28 @@ export class UserService {
   private user: User
   private url = environment.API_URL + '/user'
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  logInUser(username): void {
+  logInUser(username, password): void {
     console.log('Attempting Login')
-    this.http.get(environment.API_URL + '/login/' + username)
-    .subscribe((response: any) => {
-      console.log(response)
-      if (response.status === 'Incorrect username or password') {
-        return
-      } else {
-        this.initSession(response)
-      }
-    },
-    (err) => {
-      console.error(err)
-    })
+    this.http
+      .post(environment.API_URL + '/login', {
+        username: username,
+        password: password
+      })
+      .subscribe(
+        (response: any) => {
+          console.log(response)
+          if (response.status === 'Incorrect username or password') {
+            return
+          } else {
+            this.initSession(response)
+          }
+        },
+        err => {
+          console.error(err)
+        }
+      )
   }
 
   initSession(user: User) {
@@ -39,20 +45,21 @@ export class UserService {
   }
 
   logOutUser(): void {
-    if (!this.loggedIn) { return }
+    if (!this.loggedIn) {
+      return
+    }
 
     this.cleanSession()
     this.loggedIn = false
   }
 
-  userLoggedIn (): boolean {
+  userLoggedIn(): boolean {
     return this.user != null
   }
 
   getUser(): User {
     return this.user
   }
-
 
   getUsers() {
     return this.http.get(environment.API_URL + '/user')
@@ -63,10 +70,15 @@ export class UserService {
     this.user = null
   }
 
-  createUser(username: string, email: string): Observable<Object> {
+  createUser(
+    username: string,
+    email: string,
+    password: string
+  ): Observable<Object> {
     return this.http.post(this.url, {
       username: username,
-      email: email
+      email: email,
+      password: password
     })
   }
 

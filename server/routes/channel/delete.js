@@ -21,7 +21,6 @@ export async function deleteChannel(req, res) {
     )
     
     r = await chatCollection.deleteMany({ channelId: req.params.id })
-    await imageCollection.deleteMany({ channelId: req.params.id })
 
     res.send({ status: 'OK' })
   } catch (error) {
