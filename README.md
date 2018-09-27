@@ -175,6 +175,12 @@ _Parameters:_
 _Outputs:_
     - List of messages
     - Status Message (In error event)
+- POST /image__ | Route to post image data and store it on the server\
+_Parameters:_
+    - channelId: string\
+_Outputs:_
+    - List of messages
+    - Status Message (In error event)
 
 ## Angular
 ### Routes
