@@ -3,6 +3,6 @@ export interface Message {
   channelId: string
   type: string
   text: string | null
-  photoId: string | null
+  image: string | null
   timeStamp: number
 }

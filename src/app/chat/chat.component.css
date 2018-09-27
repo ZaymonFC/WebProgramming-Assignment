@@ -7,3 +7,12 @@
 .card-body {
   min-height: 300px
 }
+
+.row { margin: 0; padding: 0 }
+
+.img {
+  width: 85%;
+  float: right;
+  padding: 5px;
+  border-radius: 10px;
+}

@@ -63,7 +63,7 @@ function greetUser(connectionInfo, io, message) {
   const serverMessage = {
     userId: 'SERVER',
     channelId: connectionInfo.channel,
-    type: message,
+    type: 'text',
     text: `[Server] - ${connectionInfo.username} has ${message}.`,
     photoId: null,
     timeStamp: Date.now()

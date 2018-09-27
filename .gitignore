@@ -292,3 +292,4 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+server/data/images

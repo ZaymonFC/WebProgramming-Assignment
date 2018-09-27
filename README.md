@@ -77,95 +77,101 @@ The responsibilities of the rest API are the concerns of data-access and persist
 The responsibilities of the angular client are to present data to the user and to allow users to interact with the application in a real time and visual way. In this assignment the client is responsible for presenting the data as well as allowing the users to manage entities such as groups, channels and other users. The client in this assignment also has a granular permission system implemented as simple action guards to hide sets of functionality from users of different ranks.
 
 ## Routes
-- __GET /login/:username__ | A simple route which returns a user object if the user is found in the data otherwise returning null..
-<br> _Parameters:_
-    - UserID: string
-<br> _Outputs:_
+- __GET /login/:username__ | A simple route which returns a user object if the user is found in the data otherwise returning null..\
+_Parameters:_
+    - UserID: string\
+_Outputs:_
     - User Object
-- __GET /user__ | Route to return the top 100 users (for user lists).
-<br> _Parameters:_
-    - None
-<br> _Outputs:_
+- __GET /user__ | Route to return the top 100 users (for user lists).\
+_Parameters:_
+    - None\
+_Outputs:_
     - list<User>
-- __GET /user/:id__ | Route to find and return a specific user.
-<br> _Parameters:_
-    - UserID: string
-<br> _Outputs:_
+- __GET /user/:id__ | Route to find and return a specific user.\
+_Parameters:_
+    - UserID: string\
+_Outputs:_
     - User Object
-- __POST /user__ | Route to create a new User entity.
-<br> _Parameters:_
+- __POST /user__ | Route to create a new User entity.\
+_Parameters:_
     - username: string
     - email: string
-    - rank: string
-<br> _Outputs:_
+    - rank: string\
+_Outputs:_
     - User Object
-- __PATCH /user/:id__ | Route to update the contents of some user in the database.
-<br> _Parameters:_
+- __PATCH /user/:id__ | Route to update the contents of some user in the database.\
+_Parameters:_
     - UserId: string
-    - Object of changes expressed as key value pairs (key attribute name, value is the new value).
-<br> _Outputs:_
+    - Object of changes expressed as key value pairs (key attribute name, value is the new value).\
+_Outputs:_
     - respond Status Message
-- __DELETE /user/:id__ | Route to delete a user and clear all reference to that user in the group and channel collections.
-<br> _Parameters:_
-    - UserId: string
-<br> _Outputs:_
+- __DELETE /user/:id__ | Route to delete a user and clear all reference to that user in the group and channel collections.\
+_Parameters:_
+    - UserId: string\
+_Outputs:_
     - respond Status Message
-- __GET /otherUsers/:id__ | Route to fetch users that are not in a certain group (used for finding lists of users to add to groups).
-<br> _Parameters:_
-    - GroupId: string
-<br> _Outputs:_
+- __GET /otherUsers/:id__ | Route to fetch users that are not in a certain group (used for finding lists of users to add to groups).\
+_Parameters:_
+    - GroupId: string\
+_Outputs:_
     - list<User>
-- __GET /group__ | Route to get the top 100 groups (used for listing groups).
-<br> _Parameters:_
-    - None
-<br> _Outputs:_
+- __GET /group__ | Route to get the top 100 groups (used for listing groups).\
+_Parameters:_
+    - None\
+_Outputs:_
     - list<GroupSummary>
-- __GET /group/:id__ | Route to find a specific Group, then queries the database and nests all User's associated with the group as nested objects. Also nests ChannelSummary's associated with the group.
-<br> _Parameters:_
-    - GroupId: string
-<br> _Outputs:_
+- __GET /group/:id__ | Route to find a specific Group, then queries the database and nests all User's associated with the group as nested objects. Also nests ChannelSummary's associated with the group.\
+_Parameters:_
+    - GroupId: string\
+_Outputs:_
     - list<Group>
-- __POST /group__ | Route to create a Group entity and store it in the database. Sanitizes input and creates a group with a scheme. Either returns 'non-unique' or the newly created Group object.
-<br> _Parameters:_
+- __POST /group__ | Route to create a Group entity and store it in the database. Sanitizes input and creates a group with a scheme. Either returns 'non-unique' or the newly created Group object.\
+_Parameters:_
     - name: string
-    - description: string
-<br> _Outputs:_
+    - description: string\
+_Outputs:_
     - Group: Group
-- __DELETE /group/:id__ | Route to delete a group from the database. (Also deletes all associated channels).
-<br> _Parameters:_
-    - groupId: string
-<br> _Outputs:_
+- __DELETE /group/:id__ | Route to delete a group from the database. (Also deletes all associated channels).\
+_Parameters:_
+    - groupId: string\
+_Outputs:_
     - Status Message
-- __POST /channel__ | Route to create a new Channel. Sanitizes input information and then saves a new channel object to the database (includes reference to parent group). Updates group table to include a reference to the Channel. Returns newly created Channel.
-<br> _Parameters:_
+- __POST /channel__ | Route to create a new Channel. Sanitizes input information and then saves a new channel object to the database (includes reference to parent group). Updates group table to include a reference to the Channel. Returns newly created Channel.\
+_Parameters:_
     - name: string
-    - groupId: string
-<br> _Outputs:_
+    - groupId: string\
+_Outputs:_
     - channel: Channel
-- __DELETE /channel/:id__ | Route to  delete a channel and the parent groups reference to it.
-<br> _Parameters:_
-    - channelId: string
-<br> _Outputs:_
+- __DELETE /channel/:id__ | Route to  delete a channel and the parent groups reference to it.\
+_Parameters:_
+    - channelId: string\
+_Outputs:_
     - Status Message
-- __PATCH /group/:id/user__ | Route to add or remove users from group. 
-<br> _Parameters:_
+- __PATCH /group/:id/user__ | Route to add or remove users from group. \
+_Parameters:_
     - methodName: string (add or remove user)
     - groupId: string
-    - userId: string
-<br> _Outputs:_
+    - userId: string\
+_Outputs:_
     - Status Message
-- __GET /channel/:id__ | Route to get a channel with nested users.
-<br> _Parameters:_
-    - channelId: string
-<br> _Outputs:_
+- __GET /channel/:id__ | Route to get a channel with nested users.\
+_Parameters:_
+    - channelId: string\
+_Outputs:_
     - channel: Channel
-- __PATCH /channel__ | Route to add and remove users from channels
-<br> _Parameters:_
+- __PATCH /channel__ | Route to add and remove users from channels\
+_Parameters:_
     - method: string
     - userId: string
-    - channelId: string
-<br> _Outputs:_
+    - channelId: string\
+_Outputs:_
     - Status Message
+- __GET /chat:id__ | Route to get all chat messages for a certain channel\
+_Parameters:_
+    - channelId: string\
+_Outputs:_
+    - List of messages
+    - Status Message (In error event)
 
 ## Angular
 ### Routes
@@ -194,34 +200,34 @@ The responsibilities of the angular client are to present data to the user and t
 
 ## Services
 
-- __User Service__
-<br> _Responsibilities_
+- __User Service__\
+_Responsibilities_
   - Manages user for current session
   - Creates users
   - Gets users
   - Finds user
   - Deletes users
   - Promotes and demotes users to different ranks
-- __Channel Service__
-<br> _Responsibilities_
+- __Channel Service__\
+_Responsibilities_
   - Get channels
   - Remove Channels
   - Add user to channel
   - Remove user from channel
-- __Group Service__
-<br> _Responsibilities_
+- __Group Service__\
+_Responsibilities_
   - Get groups
   - Delete Groups
   - Find Groups
   - Add user to group
   - Remove user from group
-- __Permission Service__
-<br> _Responsibilities_
+- __Permission Service__\
+_Responsibilities_
   - Defines granular permissions
   - Creates permission hierarchies based on role
   - Can check whether the current user has a certain permission in their associated permission hierarchy
-- __Chat Service__
-<br> _Responsibilities_
+- __Chat Service__\
+_Responsibilities_
   - Get chat history for channels
 
 

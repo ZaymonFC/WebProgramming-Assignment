@@ -6,21 +6,41 @@
     <div class="card-body">
       <ul class="list-group" #autoScroller [scrollTop]="autoScroller.scrollHeight">
         <li *ngFor="let message of messages" class="list-item">
-          <small>{{ message.timeStamp | date:'mediumTime' }}</small> | {{message.text}}
+          <div *ngIf="message.type === 'image'">
+            <div class="row">
+              <div class="col-sm-2"> <small>{{ message.timeStamp | date:'mediumTime'}}</small></div>
+              <div class="col-sm-9">
+                <div class="container-fluid">
+                  <img src="/{{message.image}}" class='img'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="message.type === 'text'">
+            <div class="row">
+              <div class="col-sm-2"><small>{{ message.timeStamp | date:'mediumTime' }}</small></div>
+              <div class="col-sm-9">{{message.text}}</div>
+            </div>
+          </div>
         </li>
       </ul>
 
-      <br/>
+      <br />
 
 
     </div>
     <div class="card-footer">
+
       <div class="form-group">
         <label for="message">Enter Message:</label>
         <input (keyup)="keyUp($event.key)" type="text" class="form-control" [(ngModel)]="message">
       </div>
-      <button (click)="sendTextMessage()" class="btn btn-outline-success">Send Message</button>
-      <button (click)="uploadFile()" class="btn btn-outline-info">Upload File</button>
+
+      <button (click)="sendTextMessage()" class="btn btn-outline-success">Send</button>
+      <button (click)="onUpload()" class="btn btn-outline-info">Upload File</button>
+      <input #fileInput type="file" name='image' id='image' class="form-control-file" (change)="onFileSelected($event)">
+
+      <br />
     </div>
   </div>
 </div>

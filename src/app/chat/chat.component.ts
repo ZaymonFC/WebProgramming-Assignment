@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { SocketService } from '../services/socket.service'
 import { Subscription } from 'rxjs'
 import { UserService } from '../services/user.service'
 import { Channel } from 'src/app/types/channel'
 import { Message } from 'src/app/types/message'
-import { ChatService } from './chat.service';
+import { ChatService } from './chat.service'
+import { UploadService } from '../upload/upload.service'
 
 @Component({
   selector: 'app-chat',
@@ -20,14 +21,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   private username: string
   private userId: string
 
+  private selectedFile = null
+
   @Input()
   private channel: Channel
+
+  @ViewChild('fileInput')
+  private fileInput
 
   constructor(
     private router: Router,
     private socketService: SocketService,
     private userService: UserService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private uploadService: UploadService
   ) {
     // Check if the user is logged in
     if (!this.userService.userLoggedIn()) {
@@ -44,7 +51,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Connecting to socket service')
-    this.chatService.getMessages(this.channel._id)
+    this.chatService
+      .getMessages(this.channel._id)
       .subscribe((data: Message[]) => {
         this.messages = data
       })
@@ -66,6 +74,31 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.userId
     )
     this.message = ''
+    this.selectedFile = null
+  }
+
+  onFileSelected(event) {
+    console.log(event)
+    this.selectedFile = event.target.files[0]
+    console.log(event.target.files)
+  }
+
+  onUpload() {
+    const formData = new FormData()
+    formData.append('image', this.selectedFile, this.selectedFile.name)
+    this.uploadService.upload(formData).subscribe((response: any) => {
+      console.log(response)
+      if (response.image) {
+        const imagePath = response.image
+        this.socketService.sendImageMessage(
+          imagePath,
+          this.channel._id,
+          this.userId
+        )
+        this.selectedFile = null
+        this.fileInput.nativeElement.value = ''
+      }
+    })
   }
 
   keyUp(key: any) {

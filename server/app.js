@@ -16,14 +16,18 @@ import { deleteChannel } from './routes/channel/delete'
 import { manageGroupUser } from './routes/group/manageUser'
 import { manageChannelUser } from './routes/channel/manageUser'
 import { getMessages } from './routes/chat/list'
+import { uploadImage } from './routes/image/upload';
 
 const path = require('path')
+// const formidable = require('express-formidable')
 let express = require('express')
 let app = express()
 
 // Setup static serving
 app.use(express.static(path.join(__dirname, '../dist/sockets')))
+app.use(express.static(path.join(__dirname, './data/images')))
 app.use(express.json())
+// app.use(formidable());
 
 // Mongo Setup
 let MongoClient = require('mongodb').MongoClient
@@ -67,8 +71,10 @@ app.put('/channel', async (req, res) => createChannel(req, res))
 app.delete('/channel/:id', async (req, res) => deleteChannel(req, res))
 app.patch('/channel', async (req, res) => manageChannelUser(req, res))
 
+// --- Chat -------------------------------------
 app.get('/chat/:id', async (req, res) => getMessages(req, res))
 
+app.post('/image', async (req, res) => uploadImage(req, res))
 // app.get('/image/:id', async(req, res) => getImage)
 // app.get('/image/:id', async(req, res) => createImage)
 

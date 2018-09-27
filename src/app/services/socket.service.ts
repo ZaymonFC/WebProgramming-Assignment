@@ -28,8 +28,21 @@ export class SocketService {
       userId: userId,
       type: 'text',
       timeStamp: Date.now(),
-      photoId: null
+      image: null
     }
+    this.socket.emit('add-message', message)
+  }
+
+  sendImageMessage(imagePath: string, channelId: string, userId: string): void {
+    const message: Message = {
+      text: null,
+      channelId: channelId,
+      userId: userId,
+      type: 'image',
+      timeStamp: Date.now(),
+      image: imagePath
+    }
+    console.log(imagePath)
     this.socket.emit('add-message', message)
   }
 
