@@ -41,40 +41,43 @@ Throughout the development process git has been used heavily. The first section 
 ## Data Structures
 Various types have been used to represent different entities in the system. The types are:
 
-- __User___ | Data type for a user entity.
+- __User__ | Data type for a user entity.
   - id: string
   - username: string
   - rank: string
   - email: string
-- __Group___ | Data type for a group entity. Used on the front-end for the group detail view. Contains nested collections of users and channel summaries.
+- __Group__ | Data type for a group entity. Used on the front-end for the group detail view. Contains nested collections of users and channel summaries.
   - name: string
   - id: string
   - description: string
   - users: User: List<User>
   - channels: List<ChannelSummary>
-- __Group Summary___ | Lighter weight type for group entity that does not require nesting of associated user objects.
+- __Group Summary__ | Lighter weight type for group entity that does not require nesting of associated user objects.
   - name: string
   - id: string
   - description: string
   - users: list<string> (user ids)
   - channels: list<string> (channel ids)
-- __Channel___ | Type for the channel entity, used in the channel detail view. Contains nested users and a reference to the group it belongs to.
+- __Channel__ | Type for the channel entity, used in the channel detail view. Contains nested users and a reference to the group it belongs to.
   - id: string
   - name: string
   - users: list<User>
   - groupId: string
-- __Channel Summary___ | Lighter weight type for channel entity that does not require nesting of associated user objects.
+- __Channel Summary__ | Lighter weight type for channel entity that does not require nesting of associated user objects.
+  - id: string
+  - groupId: string (id of group)
+  - users: list<string> (user ids)
+- __Message__ | Lighter weight type for channel entity that does not require nesting of associated user objects.
   - id: string
   - groupId: string (id of group)
   - users: list<string> (user ids)
 
 ## Separation of Responsibilities - REST API and Client
 ### API Responsibilities
-<!-- TODO: -->
-The responsibilities of the rest API are the concerns of data-access and persistence. When entities are created, modified or deleted on the client these changes must persist to be useful. For the client to be useful it must be able to present the user with data (hence the name presentation layer). To persist changes or fetch data the client must interact with the API. These interactions are managed by sending requests to controlled endpoints (routes) where the behavior of the server is unique to the action each route is responsible for. In this project the API exposes routes to fetch, update, create and delete all entities listed in section 2. The API makes use of a functional data layer to perform queries, search, select, delete and manage foreign keys on entities stored in separate JSON files. The functional data layer also manages keys and makes use of UUIDV4 for primary keys. The data layer can enforce unique fields.
+The responsibilities of the rest API are the concerns of data-access and persistence. When entities are created, modified or deleted on the client these changes must persist to be useful. For the client to be useful it must be able to present the user with data (hence the name presentation layer). To persist changes or fetch data the client must interact with the API. These interactions are managed by sending requests to controlled endpoints (routes) where the behavior of the server is unique to the action each route is responsible for. In updated version of the assignment the thin functional data layer over JSON has been replaced with MongoDB. Mongo allows for the storage of document style records in collections. Mongo can also maintain indexes and unique constraints on collections and this was used to the advantage of the project to increase the expressiveness of checking that newly created entities are unique. The transition to Mongo also increased the performance and concurrency control of the application. By using a middleware pattern the API provides each request with a database connection. This allows for better transaction support and means that if the connection fails the server does not require a restart as new requests are provided with new database connections.
 
 ### Client Responsibilities
-The responsibilities of the angular client are to present data to the user and to allow users to interact with the application in a real time and visual way. In this assignment the client is responsible for presenting the data as well as allowing the users to manage entities such as groups, channels and other users. The client in this assignment also has a granular permission system implemented as simple action guards to hide sets of functionality from users of different ranks.
+The responsibilities of the angular client are to present data to the user and to allow users to interact with the application in a real time and visual way. In this assignment the client is responsible for presenting the data as well as allowing the users to manage entities such as groups, channels and other users. The client in this assignment also has a granular permission system implemented as simple action guards to hide sets of functionality from users of different ranks. The client makes use of a socket service to communicate in real time with the web sockets implementation on the server allowing for effective real time communication in each channel.
 
 ## Routes
 - __GET /login/:username__ | A simple route which returns a user object if the user is found in the data otherwise returning null..\
@@ -183,7 +186,7 @@ _Outputs:_
 - __'channel/:id'__, redirects to component ChannelComponent with a channel ID as input
 - __'**'__, redirectTo component '404' (not found)
 
-## Components
+### Components
  Various components were created throughout development, some components form hierarchies of parent and child components. The app component is the top level component in the application. The app component in this application contains a simple template which include a router outlet and the menu bar. When the application navigates to other routes the router outlet will be populated with different components.
 
 - __Menu__ | Menu component for logging out and navigation.
@@ -198,8 +201,7 @@ _Outputs:_
 - __NotFound__ | Component to display if the route is not found.
 - __Counter__ | Simple component that displays a badge with the value of the number passed into the parameter.
 
-## Services
-
+### Services
 - __User Service__\
 _Responsibilities_
   - Manages user for current session
@@ -228,8 +230,14 @@ _Responsibilities_
   - Can check whether the current user has a certain permission in their associated permission hierarchy
 - __Chat Service__\
 _Responsibilities_
-  - Get chat history for channels
+  - Get chat history for specific channels
+-__Socket Service__\
+_Responsibilities_
+  - Connect to web sockets provided by the server
+  - Send connection information to the sever on entering a channel
+  - Send messages to the server
+  - Observe socket connection for new messages
 
 
-## Modules
+### Modules
 The main module used during this assignment is the routing module, which defines the virtual routes for the application.
