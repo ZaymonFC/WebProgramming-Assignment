@@ -5,8 +5,7 @@ export async function createUser(req, res) {
   const user = sanitiseUserObject(req.body)
 
   if (user == null) {
-    res.send({ status: 'Something went wrong' })
-    return
+    return res.send({ status: 'Something went wrong' })
   }
 
   let collection = req.db.collection('user')

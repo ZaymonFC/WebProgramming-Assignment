@@ -6,7 +6,8 @@ const should = require('should')
 describe('GET loginRoute', () => {
   it('should fail with incorrect credentials', done => {
     request(app)
-      .get('/login/NotAUserId')
+      .post('/login')
+      .send({ username: 'super', password: 'notCorrect' })
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
       .expect(200)
@@ -59,7 +60,7 @@ describe('Create User', () => {
   it('should fail when properties are missing', done => {
     // Arrange
     const brokenUser = {
-      username: 'something',
+      username: 'somethiasdhfashdflkh',
       email: null
     }
 
@@ -77,7 +78,8 @@ describe('Create User', () => {
     const userNotUnique = {
       username: 'super',
       email: 'something@email.com',
-      rank: null
+      rank: null,
+      password: 'something'
     }
 
     request(app)
