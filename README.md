@@ -36,7 +36,7 @@
 The git structure of the git repository is simple, the top level directories of the angular project are at the top level of the repository along with the server directory and the documentation directory. The reduction in nesting resulting from not having the Angular app in it's own directory is ideal.
 
 ## Git Practices
-Throughout the development process git has been used heavily. The first section of the assignment consists of over 33 commits. A commit has been added to the repository either after each logical increment in development or when fixes are completed for bugs or unfinished features. Each commit has been used as a wrapper for a collection of related changes and the version history of the project reflects the progression and development of the system. Good descriptive commit messages have always been used in order to summarize the changes contained within. In regards to workflow a process did not have to be standardized due to the size of the developer team (1 member).
+Throughout the development process git has been used heavily. The first section of the assignment consists of over 33 commits. And the second section of the assignment over 22. A commit has been added to the repository either after each logical increment in development or when fixes are completed for bugs or unfinished features. Each commit has been used as a wrapper for a collection of related changes and the version history of the project reflects the progression and development of the system. Good descriptive commit messages have always been used in order to summarize the changes contained within. In regards to workflow a process did not have to be standardized due to the size of the developer team (1 member), however, consistency in commit messages and commit style has been provided.
 
 ## Data Structures
 Various types have been used to represent different entities in the system. The types are:
@@ -52,7 +52,7 @@ Various types have been used to represent different entities in the system. The 
   - description: string
   - users: User: List<User>
   - channels: List<ChannelSummary>
-- __Group Summary__ | Lighter weight type for group entity that does not require nesting of associated user objects.
+- __Group Summary__ | Lighter type for group entity that does not require nesting of associated user objects.
   - name: string
   - id: string
   - description: string
